@@ -68,10 +68,8 @@
                     </select>
                     <button id="infoButton" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-blue-500 transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                          <!-- Der äußere Kreis -->
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
-                          <!-- Das innere "i" (Strich + Punkt) -->
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V10.5M12 7.5h.008v.008H12V7.5Z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.855l-.041.021a.75.75 0 01-.855-1.063zm-.814 8.814h.024a.5.5 0 01-.024-.024v.024zm.814 0h.024a.5.5 0 01-.024-.024v.024zm-6.236-8.814h.024a.5.5 0 01-.024-.024v.024zm.814 0h.024a.5.5 0 01-.024-.024v.024z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
                         </svg>
                     </button>
                 </div>
@@ -173,11 +171,11 @@
             const thermeData = {
                 badWoerishofen: {
                     ticketPrices: [
-                        { duration: 120, price: 33.00, name: '2-Stunden-Ticket' },
-                        { duration: 240, price: 41.00, name: '4-Stunden-Ticket' },
-                        { duration: Infinity, price: 57.00, name: 'Tageskarte' }
+                        { duration: 120, price: 32.00, name: '2-Stunden-Ticket' },
+                        { duration: 240, price: 42.00, name: '4-Stunden-Ticket' },
+                        { duration: Infinity, price: 58.00, name: 'Tageskarte' }
                     ],
-                    extensionCost: 2.00,
+                    extensionCost: 2.50,
                     openingHoursData: {
                         'Sonntag': { start: '09:00', end: '22:00' },
                         'Montag': { start: '10:00', end: '22:00' },
@@ -444,7 +442,7 @@
                     let plannedDuration = hours * 60 + minutes;
 
                     if (plannedDuration <= 0) {
-                        handleInvalidInput('Dauer muss >0 sein.');
+                        handleInvalidInput('Dauer muss $>0$ sein.');
                         return;
                     }
 
