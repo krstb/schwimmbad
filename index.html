@@ -58,7 +58,7 @@
 
         <div class="bg-gray-50 border border-gray-200 p-2 rounded-lg space-y-2">
             <div>
-                <label for="thermeSelect" class="block text-xs font-bold text-gray-500 uppercase mb-1">Therme</label>
+                <label for="thermeSelect" class="block text-xs font-bold text-gray-500 uppercase mb-1">BAD / THERME</label>
                 <div class="relative">
                     <select id="thermeSelect" class="w-full h-9 py-1 px-2 border border-gray-300 rounded-lg text-base text-gray-700 font-medium pr-10 appearance-none">
                         <option value="badWoerishofen" selected>Therme Bad Wörishofen</option>
@@ -109,7 +109,7 @@
 
             <div class="grid grid-cols-2 gap-2 text-center">
                  <div class="p-1 bg-red-100 border border-red-200 rounded-lg">
-                    <p class="text-xs text-red-700 font-bold">DEINE KOSTEN</p>
+                    <p class="text-xs text-red-700 font-bold">KOSTEN</p>
                     <p class="text-base font-bold text-red-800"><span id="calculatedCost"></span></p>
                 </div>
                  <div class="p-1 bg-gray-200 rounded-lg">
@@ -246,7 +246,7 @@
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
                         { duration: Infinity, price: 30.00, name: 'Tageskarte (ab 7 h)' }
                     ],
-                    extensionCost: 2.00,
+                    extensionCost: 2.50,
                     openingHoursData: {
                         'Sonntag': { start: '10:00', end: '22:00' },
                         'Montag': { start: '10:00', end: '22:00' },
@@ -263,7 +263,7 @@
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
                         { duration: Infinity, price: 30.00, name: 'Tageskarte (ab 7 h)' }
                     ],
-                    extensionCost: 2.00,
+                    extensionCost: 2.50,
                     openingHoursData: {
                         'Sonntag': { start: '10:00', end: '22:00' },
                         'Montag': { start: '10:00', end: '22:00' },
@@ -280,7 +280,7 @@
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
                         { duration: Infinity, price: 30.00, name: 'Tageskarte  (ab 7 h)' }
                     ],
-                    extensionCost: 2.00,
+                    extensionCost: 2.50,
                     openingHoursData: {
                         'Sonntag': { start: '10:00', end: '22:00' },
                         'Montag': { start: '10:00', end: '22:00' },
@@ -373,12 +373,12 @@
             }
 
             function updateFixedPricesUI() {
-                let tableHtml = '<h3 class="font-bold text-center mb-1 text-gray-600">Preise</h3><table class="mx-auto text-left">';
+                let tableHtml = '<h3 class="font-bold text-center mb-1 text-gray-600">Preise:</h3><table class="mx-auto text-left">';
                 tableHtml += '<tbody>';
                 currentTherme.ticketPrices.forEach(ticket => {
                     tableHtml += `<tr><td class="py-0.5 pr-4">${ticket.name}</td><td class="py-0.5 text-right font-medium">${ticket.price.toFixed(2).replace('.', ',')} €</td></tr>`;
                 });
-                tableHtml += `<tr><td class="py-0.5 pr-4">Verlängerung (30 min)</td><td class="py-0.5 text-right font-medium">${currentTherme.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
+                tableHtml += `<tr><td class="py-0.5 pr-4">Verlängerung 30 min</td><td class="py-0.5 text-right font-medium">${currentTherme.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
                 tableHtml += '</tbody></table>';
                 fixedPricesContainer.innerHTML = tableHtml;
             }
@@ -483,7 +483,7 @@
                     let plannedDuration = hours * 60 + minutes;
 
                     if (plannedDuration <= 0) {
-                        handleInvalidInput('Dauer muss $>0$ sein.');
+                        handleInvalidInput('Dauer muss größer 0 sein.');
                         return;
                     }
 
@@ -535,7 +535,7 @@
                         recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center ${recommendationColor} min-h-[4rem] flex flex-col justify-center`;
                         recommendationText.textContent = result.bestOption.name;
                         savingsText.innerHTML = result.savings > 0
-                            ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}.`
+                            ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                             : 'Dies ist die günstigste Option<br>&nbsp;';
                     }
                     
@@ -612,12 +612,12 @@
                         
                         if (inputTimeOnVisitDay.getTime() < openingTime.getTime()) {
                             effectiveEntryTime = openingTime;
-                            adjustedMessage += 'Ihre Startzeit wurde auf die Öffnungszeit angepasst.<br>';
+                            adjustedMessage += 'Ihre Startzeit wurde auf die Öffnungszeit angepasst<br>';
                         }
                         
                         if (departureTimeValue && effectiveDepartureTime.getTime() > closingTime.getTime()) {
                             effectiveDepartureTime = closingTime;
-                            adjustedMessage += `Ihre Abreisezeit wurde auf die Schließzeit (${entryDayHours.end.replace('24:00', '00:00')} Uhr) angepasst.<br>`;
+                            adjustedMessage += `Ihre Abreisezeit wurde auf die Schließzeit angepasst<br>`;
                         }
                     }
                     
@@ -763,12 +763,12 @@
                 
                 contentHtml += '</table>';
 
-                contentHtml += '<p class="text-sm font-semibold mt-4 mb-2 text-gray-800">Preise und Verlängerung:</p>';
+                contentHtml += '<p class="text-sm font-semibold mt-4 mb-2 text-gray-800">Preise:</p>';
                 contentHtml += '<table class="w-full text-left border-collapse">';
                 data.ticketPrices.forEach(ticket => {
                     contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">${ticket.name}</td><td class="py-1 px-1 text-right font-medium">${ticket.price.toFixed(2).replace('.', ',')} €</td></tr>`;
                 });
-                contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">Verlängerung (30 min)</td><td class="py-1 px-1 text-right font-medium">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
+                contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">Verlängerung 30 min</td><td class="py-1 px-1 text-right font-medium">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
                 contentHtml += '</table>';
 
                 modalContent.innerHTML = contentHtml;
