@@ -157,19 +157,18 @@
             const durationDisplay = document.getElementById('durationDisplay');
             const nextOpeningHoursDisplay = document.getElementById('nextOpeningHoursDisplay');
             const tomorrowLabel = document.getElementById('tomorrowLabel');
-
             const infoButton = document.getElementById('infoButton');
             const infoModal = document.getElementById('infoModal');
             const closeModalButton = document.getElementById('closeModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
-
             const thermeData = {
                 badWoerishofen: {
+                    permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 32.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 42.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 58.00, name: 'Tageskarte (ab 7,0 h rent.)' }
+                        { duration: Infinity, price: 58.00, name: 'Tageskarte (ab 7,0 h)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
@@ -183,10 +182,11 @@
                     }
                 },
                 kristalltherme: {
+                    permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 26.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 36.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 45.00, name: 'Tageskarte (ab 5,0 h rent.)' }
+                        { duration: Infinity, price: 45.00, name: 'Tageskarte (ab 5,0 h)' }
                     ],
                     extensionCost: 3.00,
                     openingHoursData: {
@@ -200,10 +200,11 @@
                     }
                 },
                 titania: {
+                    permanentlyClosed: true,
                     ticketPrices: [
                         { duration: 120, price: 31.50, name: '2-Stunden-Karte' },
                         { duration: 240, price: 35.50, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 41.00, name: 'Tageskarte (ab 5,0 h rent.)' }
+                        { duration: Infinity, price: 41.00, name: 'Tageskarte (ab 5,0 h)' }
                     ],
                     extensionCost: 2.00,
                     openingHoursData: {
@@ -217,10 +218,11 @@
                     }
                 },
                 bobingen: {
+                    permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 26.90, name: '2-Stunden-Karte' },
                         { duration: 240, price: 29.90, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 31.90, name: 'Tageskarte (ab 5,0 h rent.)' }
+                        { duration: Infinity, price: 31.90, name: 'Tageskarte (ab 5,0 h)' }
                     ],
                     extensionCost: 0.90,
                     openingHoursData: {
@@ -234,10 +236,11 @@
                     }
                 },
                 musterbad1: {
+                    permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 27.00, name: 'Tageskarte (ab 5,0 h rent.)' }
+                        { duration: Infinity, price: 27.00, name: 'Tageskarte (ab 5,0 h)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
@@ -251,10 +254,11 @@
                     }
                 },
                 musterbad2: {
+                    permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 26.00, name: 'Tageskarte (ab 5,0 h rent.)' }
+                        { duration: Infinity, price: 26.00, name: 'Tageskarte (ab 5,0 h)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
@@ -268,10 +272,11 @@
                     }
                 },
                 musterbad3: {
+                    permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 25.00, name: 'Tageskarte (ab 4,5 h rent.)' }
+                        { duration: Infinity, price: 25.00, name: 'Tageskarte (ab 4,5 h)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
@@ -320,6 +325,10 @@
             }
 
             function findNextOpenDate(fromDate) {
+                if (currentTherme.permanentlyClosed) {
+                    return null; 
+                }
+
                 const checkDate = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
                 for (let i = 0; i < 7; i++) {
                     const dayName = days[checkDate.getDay()];
@@ -339,13 +348,13 @@
 
                 nextOpeningHoursDisplay.className = "text-center text-sm p-2 rounded-lg font-medium w-full";
 
-                if (!hours) {
+                if (!hours || currentTherme.permanentlyClosed) {
                     const tomorrow = new Date(date);
                     tomorrow.setDate(date.getDate() + 1);
-                    const nextOpen = findNextOpenDate(tomorrow);
+                    const nextOpen = currentTherme.permanentlyClosed ? null : findNextOpenDate(tomorrow);
 
                     nextOpeningHoursDisplay.classList.add("bg-amber-100", "text-amber-900", "border", "border-amber-300");
-                    if (nextOpen) {
+                    if (nextOpen && !currentTherme.permanentlyClosed) {
                         const dateStr = formatDateShort(nextOpen.date);
                         nextOpeningHoursDisplay.innerHTML = `<span class="inline-block px-1.5 py-0.5 mr-1 bg-red-600 text-white rounded font-bold text-xs uppercase">Ruhetag</span> Nächste Öffnung: <strong>${nextOpen.dayName}, ${dateStr}</strong> ab <strong>${nextOpen.hours.start} Uhr</strong>`;
                     } else {
@@ -404,7 +413,6 @@
                 let savings = 0;
                 let comparedToOption = '';
                 
-                // Exakter Vergleich mit der nächsthöheren Ticketoption
                 const higherCostItem = allCalculatedCosts.find(item => item.cost > minCost);
                 if (higherCostItem) {
                     savings = higherCostItem.cost - minCost;
@@ -462,7 +470,7 @@
                 }
 
                 if (plannedMinutes >= minutesToBreakEven) {
-                    breakEvenLabel.textContent = "Tageskarte rentabel";
+                    breakEvenLabel.textContent = "Tageskarte rentabel ab";
                     return `${breakEvenDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
                 }
                 
@@ -576,7 +584,7 @@
 
                     if (maxDurationExceeded) {
                         recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center bg-red-500 min-h-[4rem] flex flex-col justify-center`;
-                        savingsText.innerHTML = 'Aufenthaltsdauer auf Schließzeit angepasst';
+                        savingsText.innerHTML = 'Aufenthaltsdauer an Schließzeit angepasst';
                     } else {
                         let recommendationColor = getRecommendationColor(result);
                         recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center ${recommendationColor} min-h-[4rem] flex flex-col justify-center`;
@@ -666,12 +674,12 @@
                         
                         if (inputTimeOnVisitDay.getTime() < openingTime.getTime()) {
                             effectiveEntryTime = openingTime;
-                            adjustedMessage += 'Aufenthaltsdauer auf Öffnungszeit angepasst<br>';
+                            adjustedMessage += 'Aufenthaltsdauer an Öffnungszeit angepasst<br>';
                         }
                         
                         if (departureTimeValue && effectiveDepartureTime.getTime() > closingTime.getTime()) {
                             effectiveDepartureTime = closingTime;
-                            adjustedMessage += `Aufenthaltsdauer auf Schließzeit angepasst<br>`;
+                            adjustedMessage += `Aufenthaltsdauer an Schließzeit angepasst<br>`;
                         }
                     }
                     
@@ -737,7 +745,7 @@
                 currentTherme = thermeData[thermeSelect.value];
 
                 const now = getNow();
-                let nextOpen = findNextOpenDate(now);
+                let nextOpen = currentTherme.permanentlyClosed ? null : findNextOpenDate(now);
 
                 if (!nextOpen) {
                     nextOpen = {
@@ -752,7 +760,7 @@
                 const openingTimeDate = new Date(nextOpen.date.getFullYear(), nextOpen.date.getMonth(), nextOpen.date.getDate(), openHour, openMinute, 0, 0);
                 const closingTimeDate = getClosingTime(nextOpen.date, nextOpen.hours);
 
-                if (nextOpen.date.toDateString() === now.toDateString()) {
+                if (nextOpen.date.toDateString() === now.toDateString() && !currentTherme.permanentlyClosed) {
                     if (now.getTime() >= closingTimeDate.getTime()) {
                         const tomorrow = new Date(now);
                         tomorrow.setDate(now.getDate() + 1);
@@ -797,7 +805,7 @@
                     const hours = data.openingHoursData[day];
                     contentHtml += `<tr class="border-t border-gray-200">
                         <td class="py-1 px-1">${day}</td>
-                        <td class="py-1 px-1 text-right font-medium">${hours ? `${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr` : '<span class="text-red-500 font-semibold">Ruhetag</span>'}</td>
+                        <td class="py-1 px-1 text-right font-medium">${hours && !data.permanentlyClosed ? `${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr` : '<span class="text-red-500 font-semibold">Geschlossen</span>'}</td>
                     </tr>`;
                 });
                 
@@ -807,7 +815,7 @@
                 data.ticketPrices.forEach(ticket => {
                     contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">${ticket.name}</td><td class="py-1 px-1 text-right font-medium">${ticket.price.toFixed(2).replace('.', ',')} €</td></tr>`;
                 });
-                contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">Verlängerung 30 min</td><td class="py-1 px-1 text-right font-medium">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
+                contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">Verlängerung 30 min.</td><td class="py-1 px-1 text-right font-medium">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
                 contentHtml += '</table>';
 
                 modalContent.innerHTML = contentHtml;
