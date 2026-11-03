@@ -121,7 +121,6 @@
             </div>
         </div>
 
-        <!-- <div id="fixedPricesContainer" class="text-xs text-gray-500 pt-2 border-t border-gray-200"></div> -->
         <div id="fixedPricesContainer" class="hidden"></div>
     </div>
 
@@ -146,7 +145,6 @@
             const departureTimeInput = document.getElementById('departureTime');
             const durationHoursInput = document.getElementById('durationHours');
             const durationMinutesInput = document.getElementById('durationMinutes');
-            const fixedPricesContainer = document.getElementById('fixedPricesContainer');
             const recommendationBox = document.getElementById('recommendationBox');
             const recommendationText = document.getElementById('recommendationText');
             const savingsText = document.getElementById('savingsText');
@@ -171,7 +169,7 @@
                     ticketPrices: [
                         { duration: 120, price: 32.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 42.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 58.00, name: 'Tageskarte (ab 7 h rent.)' }
+                        { duration: Infinity, price: 58.00, name: 'Tageskarte (ab 7,0 h rent.)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
@@ -188,7 +186,7 @@
                     ticketPrices: [
                         { duration: 120, price: 26.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 36.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 45.00, name: 'Tageskarte (ab 5,5 h rent.)' }
+                        { duration: Infinity, price: 45.00, name: 'Tageskarte (ab 5,0 h rent.)' }
                     ],
                     extensionCost: 3.00,
                     openingHoursData: {
@@ -205,7 +203,7 @@
                     ticketPrices: [
                         { duration: 120, price: 31.50, name: '2-Stunden-Karte' },
                         { duration: 240, price: 35.50, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 41.00, name: 'Tageskarte (ab 5 h rent.)' }
+                        { duration: Infinity, price: 41.00, name: 'Tageskarte (ab 5,0 h rent.)' }
                     ],
                     extensionCost: 2.00,
                     openingHoursData: {
@@ -222,7 +220,7 @@
                     ticketPrices: [
                         { duration: 120, price: 26.90, name: '2-Stunden-Karte' },
                         { duration: 240, price: 29.90, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 31.90, name: 'Tageskarte (ab 5 h)' }
+                        { duration: Infinity, price: 31.90, name: 'Tageskarte (ab 5,0 h rent.)' }
                     ],
                     extensionCost: 0.90,
                     openingHoursData: {
@@ -239,14 +237,14 @@
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 30.00, name: 'Tageskarte (ab 6 h rent.)' }
+                        { duration: Infinity, price: 27.00, name: 'Tageskarte (ab 5,0 h rent.)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
-                        'Sonntag': { start: '10:00', end: '22:00' },
-                        'Montag': { start: '10:00', end: '22:00' },
-                        'Dienstag': { start: '10:00', end: '22:00' },
-                        'Mittwoch': { start: '10:00', end: '22:00' },
+                        'Sonntag': { start: '10:00', end: '21:00' },
+                        'Montag': { start: '09:00', end: '12:00' },
+                        'Dienstag': { start: '10:00', end: '23:00' },
+                        'Mittwoch': null,
                         'Donnerstag': { start: '10:00', end: '22:00' },
                         'Freitag': { start: '10:00', end: '22:00' },
                         'Samstag': { start: '10:00', end: '22:00' }
@@ -256,13 +254,13 @@
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 30.00, name: 'Tageskarte (ab 6 h rent.)' }
+                        { duration: Infinity, price: 26.00, name: 'Tageskarte (ab 5,0 h rent.)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
                         'Sonntag': { start: '10:00', end: '22:00' },
                         'Montag': { start: '10:00', end: '22:00' },
-                        'Dienstag': { start: '10:00', end: '22:00' },
+                        'Dienstag': null,
                         'Mittwoch': { start: '10:00', end: '22:00' },
                         'Donnerstag': { start: '10:00', end: '22:00' },
                         'Freitag': { start: '10:00', end: '22:00' },
@@ -273,7 +271,7 @@
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 30.00, name: 'Tageskarte (ab 6 h rent.)' }
+                        { duration: Infinity, price: 25.00, name: 'Tageskarte (ab 4,5 h rent.)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
@@ -281,7 +279,7 @@
                         'Montag': { start: '10:00', end: '22:00' },
                         'Dienstag': { start: '10:00', end: '22:00' },
                         'Mittwoch': { start: '10:00', end: '22:00' },
-                        'Donnerstag': { start: '10:00', end: '22:00' },
+                        'Donnerstag': null,
                         'Freitag': { start: '10:00', end: '22:00' },
                         'Samstag': { start: '10:00', end: '22:00' }
                     }
@@ -339,7 +337,6 @@
                 const hours = currentTherme.openingHoursData[dayName];
                 const now = getNow();
 
-                // Standard-Design zurücksetzen
                 nextOpeningHoursDisplay.className = "text-center text-sm p-2 rounded-lg font-medium w-full";
 
                 if (!hours) {
@@ -347,7 +344,6 @@
                     tomorrow.setDate(date.getDate() + 1);
                     const nextOpen = findNextOpenDate(tomorrow);
 
-                    // Auffälliges Design bei Ruhetag
                     nextOpeningHoursDisplay.classList.add("bg-amber-100", "text-amber-900", "border", "border-amber-300");
                     if (nextOpen) {
                         const dateStr = formatDateShort(nextOpen.date);
@@ -381,17 +377,8 @@
                     }
                 } else {
                     const dateStr = formatDateShort(date);
-                    nextOpeningHoursDisplay.innerHTML = `Geöffnet <strong>${dayName}, ${dateStr}</strong> (${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr)`;
+                    nextOpeningHoursDisplay.innerHTML = `Geöffnet <strong>${dayName}, ${dateStr}</strong><br>${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr`;
                 }
-            }
-
-            function updateFixedPricesUI() {
-                let tableHtml = '<h3 class="font-bold text-center mb-1 text-gray-600">Preise:</h3><table class="mx-auto text-left"><tbody>';
-                currentTherme.ticketPrices.forEach(ticket => {
-                    tableHtml += `<tr><td class="py-0.5 pr-4">${ticket.name}</td><td class="py-0.5 text-right font-medium">${ticket.price.toFixed(2).replace('.', ',')} €</td></tr>`;
-                });
-                tableHtml += `<tr><td class="py-0.5 pr-4">Verlängerung 30 min</td><td class="py-0.5 text-right font-medium">${currentTherme.extensionCost.toFixed(2).replace('.', ',')} €</td></tr></tbody></table>`;
-                fixedPricesContainer.innerHTML = tableHtml;
             }
 
             function findBestOption(durationInMinutes) {
@@ -405,22 +392,25 @@
                         const extensionsNeeded = Math.ceil(extraMinutes / 30); 
                         cost += extensionsNeeded * currentTherme.extensionCost;
                     }
-                    allCalculatedCosts.push({ name: ticket.name, cost: cost });
-                    if (cost < minCost) {
+                    allCalculatedCosts.push({ name: ticket.name, cost: cost, duration: ticket.duration });
+                    
+                    if (cost < minCost || (cost === minCost && ticket.duration > (bestOption ? bestOption.duration : 0))) {
                         minCost = cost;
                         bestOption = { name: ticket.name, duration: ticket.duration, price: ticket.price };
                     }
                 });
+
                 allCalculatedCosts.sort((a, b) => a.cost - b.cost);
                 let savings = 0;
                 let comparedToOption = '';
-                const uniqueCosts = [...new Set(allCalculatedCosts.map(item => item.cost))];
-                if (uniqueCosts.length > 1) {
-                    const secondBestCost = uniqueCosts[1];
-                    const secondBestOption = allCalculatedCosts.find(item => item.cost === secondBestCost);
-                    savings = secondBestCost - minCost;
-                    comparedToOption = secondBestOption.name;
+                
+                // Exakter Vergleich mit der nächsthöheren Ticketoption
+                const higherCostItem = allCalculatedCosts.find(item => item.cost > minCost);
+                if (higherCostItem) {
+                    savings = higherCostItem.cost - minCost;
+                    comparedToOption = higherCostItem.name;
                 }
+
                 return { bestOption, calculatedCost: minCost, savings, comparedToOption };
             }
 
@@ -434,25 +424,47 @@
                 }
                 
                 breakEvenTimeContainer.style.display = 'block';
+                breakEvenLabel.textContent = "Tageskarte rentabel ab";
+
                 const costDifference = dayPassTicket.price - fourHourTicket.price;
-                const extensionsNeeded = Math.ceil(costDifference / currentTherme.extensionCost);
-                const minutesToAdd = fourHourTicket.duration + extensionsNeeded * 30;
+                const maxExtensionsCheaper = Math.floor((costDifference - 0.01) / currentTherme.extensionCost);
+                const minutesToBreakEven = fourHourTicket.duration + (maxExtensionsCheaper * 30) + 1;
 
                 const dayOfWeek = days[entryTime.getDay()];
                 const hours = currentTherme.openingHoursData[dayOfWeek];
-                
                 if (!hours) return "Geschlossen";
                 
                 const openingTime = new Date(entryTime.getFullYear(), entryTime.getMonth(), entryTime.getDate(), ...hours.start.split(':').map(Number));
                 const closingTime = getClosingTime(entryTime, hours);
                 
-                const effectiveStartTime = new Date(Math.max(entryTime.getTime(), openingTime.getTime()));
-                const minutesAvailableToday = (closingTime.getTime() - effectiveStartTime.getTime()) / (1000 * 60);
-
-                if (minutesToAdd > minutesAvailableToday) return "Heute nicht rentabel";
+                const exactEntry = new Date(entryTime.getTime());
+                exactEntry.setSeconds(0, 0);
+                const effectiveStartTime = new Date(Math.max(exactEntry.getTime(), openingTime.getTime()));
                 
-                const breakEvenDate = new Date(effectiveStartTime.getTime());
-                breakEvenDate.setMinutes(breakEvenDate.getMinutes() + minutesToAdd);
+                const minutesAvailableToday = Math.round((closingTime.getTime() - effectiveStartTime.getTime()) / (1000 * 60));
+
+                if (minutesToBreakEven > minutesAvailableToday) {
+                    return "Heute nicht";
+                }
+                
+                const breakEvenDate = new Date(effectiveStartTime.getTime() + minutesToBreakEven * 60 * 1000);
+                
+                let plannedMinutes = 0;
+                if (lastInteractionType === 'duration') {
+                    const h = parseInt(durationHoursInput.value) || 0;
+                    const m = parseInt(durationMinutesInput.value) || 0;
+                    plannedMinutes = h * 60 + m;
+                } else if (departureTimeInput.value) {
+                    const [depH, depM] = departureTimeInput.value.split(':').map(Number);
+                    const depDate = new Date(entryTime.getFullYear(), entryTime.getMonth(), entryTime.getDate(), depH, depM);
+                    if (depDate.getTime() <= effectiveStartTime.getTime()) depDate.setDate(depDate.getDate() + 1);
+                    plannedMinutes = Math.round((depDate.getTime() - effectiveStartTime.getTime()) / (1000 * 60));
+                }
+
+                if (plannedMinutes >= minutesToBreakEven) {
+                    breakEvenLabel.textContent = "Tageskarte rentabel";
+                    return `${breakEvenDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
+                }
                 
                 return `${breakEvenDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
             }
@@ -480,7 +492,7 @@
                     const dName = days[targetDate.getDay()];
                     const dStr = formatDateShort(targetDate);
                     targetDateBadge.textContent = isRuhetagSkipped 
-                        ? `Ruhetag: Berechnet für ${dName}, ${dStr}`
+                        ? `Berechnet für ${dName}, ${dStr}`
                         : `Berechnet für ${dName}, ${dStr}`;
                     targetDateBadge.classList.remove('hidden');
                 } else {
@@ -560,16 +572,14 @@
 
                     const result = findBestOption(durationInMinutes);
 
+                    recommendationText.textContent = result.bestOption.name;
+
                     if (maxDurationExceeded) {
-                        const maxHours = Math.floor(remainingMinutes / 60);
-                        const maxMinutes = Math.floor(remainingMinutes % 60);
                         recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center bg-red-500 min-h-[4rem] flex flex-col justify-center`;
-                        recommendationText.textContent = 'Berechnung angepasst';
-                        savingsText.innerHTML = `${adjustedMessage}Maximale Aufenthaltsdauer ist ${maxHours}h ${maxMinutes}min.`;
+                        savingsText.innerHTML = 'Aufenthaltsdauer auf Schließzeit angepasst';
                     } else {
                         let recommendationColor = getRecommendationColor(result);
                         recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center ${recommendationColor} min-h-[4rem] flex flex-col justify-center`;
-                        recommendationText.textContent = result.bestOption.name;
                         savingsText.innerHTML = (adjustedMessage ? `${adjustedMessage}` : '') + (result.savings > 0
                             ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                             : 'Dies ist die günstigste Option<br>&nbsp;');
@@ -656,12 +666,12 @@
                         
                         if (inputTimeOnVisitDay.getTime() < openingTime.getTime()) {
                             effectiveEntryTime = openingTime;
-                            adjustedMessage += 'Startzeit auf Öffnungszeit angepasst<br>';
+                            adjustedMessage += 'Aufenthaltsdauer auf Öffnungszeit angepasst<br>';
                         }
                         
                         if (departureTimeValue && effectiveDepartureTime.getTime() > closingTime.getTime()) {
                             effectiveDepartureTime = closingTime;
-                            adjustedMessage += `Abreisezeit auf Schließzeit angepasst<br>`;
+                            adjustedMessage += `Aufenthaltsdauer auf Schließzeit angepasst<br>`;
                         }
                     }
                     
@@ -670,13 +680,13 @@
                     const result = findBestOption(durationInMinutes);
                     const recommendationColor = getRecommendationColor(result);
 
+                    recommendationText.textContent = result.bestOption.name;
+
                     if (adjustedMessage) {
                         recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center bg-red-500 min-h-[4rem] flex flex-col justify-center`;
-                        recommendationText.textContent = 'Berechnung angepasst';
-                        savingsText.innerHTML = adjustedMessage;
+                        savingsText.innerHTML = adjustedMessage.replace(/<br>$/, '');
                     } else {
                         recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center ${recommendationColor} min-h-[4rem] flex flex-col justify-center`;
-                        recommendationText.textContent = result.bestOption.name;
                         savingsText.innerHTML = result.savings > 0
                             ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                             : 'Dies ist die günstigste Option<br>&nbsp;';
@@ -725,7 +735,6 @@
 
             function initializeUI() {
                 currentTherme = thermeData[thermeSelect.value];
-                updateFixedPricesUI();
 
                 const now = getNow();
                 let nextOpen = findNextOpenDate(now);
@@ -757,12 +766,16 @@
                     }
                 }
                 
-                entryTimeInput.value = effectiveStartTime;
+                if (!entryTimeInput.value) {
+                    entryTimeInput.value = effectiveStartTime;
+                }
                 
                 if (lastInteractionType === 'time') {
-                     departureTimeInput.value = '19:00';
+                    if (!departureTimeInput.value) {
+                        departureTimeInput.value = '19:00';
+                    }
                 } else {
-                     departureTimeInput.value = ''; 
+                    departureTimeInput.value = ''; 
                 }
 
                 displayOpeningHours(nextOpen.date);
@@ -805,7 +818,7 @@
 
             function startUpdateInterval() {
                 setInterval(() => {
-                    if (!document.activeElement.matches('input[type="time"], input[type="number"]')) {
+                    if (!document.activeElement.matches('input[type="time"], input[type="number"], select')) {
                         calculateAndDisplay(); 
                     }
                 }, 10000);
