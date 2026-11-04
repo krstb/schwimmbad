@@ -3,63 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schwimmbad</title>
-
+    <title>Schwimmbad-Rechner</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="icon-192.png"> 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#0f172a">
     <meta name="color-scheme" content="light">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <script>
-      // Service Worker Registrierung
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js')
-            .catch(err => console.log('SW Fehler:', err));
+          navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Fehler:', err));
         });
       }
     </script>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');       
-
-        /* Fix für PWA-Ränder und den blauen Balken */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
         html {
-            background-color: #000000 !important;
+            background-color: #0f172a !important;
             overscroll-behavior-y: none;
         }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            color: #334155;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
             min-height: 100vh;
             padding: 1rem;
-            background-image: repeating-linear-gradient(135deg, #a8d5e5, #a8d5e5 5px, #bde0ef 5px, #bde0ef 10px);
+            background: radial-gradient(circle at 50% 0%, #38bdf8 0%, #0284c7 35%, #0f172a 100%);
             display: flex;
             justify-content: center;
             align-items: flex-start;
         }
-        
-        #tomorrowLabel {
-             right: -2.5rem;
+        /* Custom input styling for modern looks */
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
         }
     </style>
 </head>
-<body>
-    <div class="w-full max-w-sm mx-auto p-4 bg-white rounded-2xl shadow-xl border-2 border-gray-200 space-y-2">
-        
-        <h1 class="text-xl font-bold text-center text-gray-800">Robert's Eintrittsrechner</h1>
+<body class="py-4 sm:py-8 antialiased selection:bg-cyan-500 selection:text-white">
 
-        <div class="bg-gray-50 border border-gray-200 p-2 rounded-lg space-y-2">
-            <div>
-                <label for="thermeSelect" class="block text-xs font-bold text-gray-500 uppercase mb-1">BAD / THERME AUSWÄHLEN</label>
-                <div class="flex items-center gap-2">
-                    <select id="thermeSelect" class="flex-1 h-9 py-1 px-2 border border-gray-300 rounded-lg text-base text-gray-700 font-medium">
+    <!-- Haupt-Card mit weichem Schatten und modernem Rand -->
+    <div class="w-full max-w-sm mx-auto bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-white/40 p-4 sm:p-5 space-y-3.5 transition-all">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-1 border-b border-slate-100">
+            <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-400 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h1 class="text-base font-extrabold tracking-tight text-slate-800">Robert's Eintrittsrechner</h1>
+            </div>
+            <button type="button" id="infoButton" class="w-7 h-7 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors shadow-inner" title="Öffnungszeiten & Preise">
+                <span class="text-xs font-bold font-serif italic">i</span>
+            </button>
+        </div>
+
+        <!-- Sektion: Bad-Auswahl & Öffnungszeiten -->
+        <div class="space-y-2">
+            <div class="relative">
+                <label for="thermeSelect" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-1">Bad / Therme</label>
+                <div class="relative">
+                    <select id="thermeSelect" class="w-full h-10 pl-3 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-shadow appearance-none cursor-pointer">
                         <option value="badWoerishofen" selected>Therme Bad Wörishofen</option>
                         <option value="kristalltherme">Kristall-Therme Schwangau</option>
                         <option value="titania">Titania Neusäß</option>
@@ -68,73 +80,85 @@
                         <option value="musterbad2">Musterbad 2</option>
                         <option value="musterbad3">Musterbad 3</option>
                     </select>
-
-                    <button type="button" id="infoButton" class="h-9 w-9 flex items-center justify-center text-gray-500 hover:text-blue-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
-                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full border border-current text-xs font-bold leading-none font-serif italic">i</span>
-                    </button>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
                 </div>
             </div>
-            <div id="nextOpeningHoursDisplay" class="text-center text-sm p-2 bg-blue-100 text-blue-800 rounded-lg font-medium w-full"></div>
+
+            <!-- Fixierte Öffnungszeiten-Box -->
+            <div id="nextOpeningHoursDisplay" class="text-center text-xs p-2 bg-sky-50 text-sky-900 border border-sky-100 rounded-xl font-medium w-full h-12 flex flex-col justify-center overflow-hidden transition-all shadow-sm"></div>
         </div>
 
-        <div class="bg-gray-50 border border-gray-200 p-2 rounded-lg space-y-2">
+        <!-- Sektion: Eingaben (Zeiten / Dauer) -->
+        <div class="p-3 bg-slate-50/70 border border-slate-100 rounded-2xl space-y-2.5">
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label for="entryTime" class="block text-xs font-bold text-gray-500 uppercase mb-1">Beginn des Besuches</label>
-                    <input type="time" id="entryTime" class="w-full h-9 py-1 px-2 border border-gray-300 rounded-lg text-base text-gray-700 font-medium text-center">
+                    <label for="entryTime" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-1">Beginn</label>
+                    <input type="time" id="entryTime" class="w-full h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold text-center focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
                 </div>
-                <div>
-                    <label for="departureTime" class="relative block text-xs font-bold text-gray-500 uppercase mb-1">Abreise bis <span id="tomorrowLabel" class="hidden absolute -top-1.5 px-2 py-0.5 bg-blue-600 text-white text-xs font-bold rounded-full border border-blue-800">Morgen</span></label>
-                    <input type="time" id="departureTime" class="w-full h-9 py-1 px-2 border border-gray-300 rounded-lg text-base text-gray-700 font-medium text-center">
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-1">
+                        <label for="departureTime" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Abreise bis</label>
+                        <span id="tomorrowLabel" class="hidden text-[9px] font-extrabold uppercase px-1.5 py-0.2 bg-sky-600 text-white rounded-full">Morgen</span>
+                    </div>
+                    <input type="time" id="departureTime" class="w-full h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold text-center focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
                 </div>
             </div>
+
             <div>
-                <label for="durationHours" class="block text-xs font-bold text-gray-500 uppercase mb-1">Aufenthalt (h/min)</label>
+                <label for="durationHours" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-1">Aufenthalt (Stunden / Minuten)</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="number" id="durationHours" min="0" max="12" placeholder="Stunden" class="w-full h-9 py-1 px-2 border border-gray-300 rounded-lg text-base text-gray-700 font-medium text-center">
-                    <input type="number" id="durationMinutes" min="0" max="59" step="5" placeholder="Minuten" class="w-full h-9 py-1 px-2 border border-gray-300 rounded-lg text-base text-gray-700 font-medium text-center">
+                    <input type="number" id="durationHours" min="0" max="12" placeholder="Std." class="w-full h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold text-center placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
+                    <input type="number" id="durationMinutes" min="0" max="59" step="5" placeholder="Min." class="w-full h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold text-center placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
                 </div>
             </div>
         </div>
 
-        <div id="results" class="space-y-2">
-            <div id="recommendationBox" class="p-2 rounded-lg text-white font-medium text-center transition-colors duration-500 min-h-[4rem] flex flex-col justify-center">
-                <div id="targetDateBadge" class="hidden inline-block mx-auto mb-1 px-2 py-0.5 bg-black bg-opacity-25 rounded-md text-xs font-bold tracking-wide"></div>
-                <p id="recommendationText" class="text-lg font-bold">Warte auf Eingabe</p>
-                <p id="savingsText" class="mt-1 text-xs">&nbsp;</p>
+        <!-- Sektion: Ergebnisse -->
+        <div id="results" class="space-y-2 pt-1">
+            
+            <!-- Fixierte Empfehlungsbox -->
+            <div id="recommendationBox" class="p-2 rounded-2xl text-white font-medium text-center shadow-lg transition-colors duration-500 h-[106px] flex flex-col justify-center overflow-hidden">
+                <div id="targetDateBadge" class="hidden inline-block mx-auto mb-0.5 px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded-md text-[10px] font-bold tracking-wide uppercase"></div>
+                <p id="recommendationText" class="text-base font-extrabold tracking-tight">Warte auf Eingabe</p>
+                <p id="savingsText" class="mt-0.5 text-xs text-white/90 leading-tight">&nbsp;</p>
             </div>
 
+            <!-- Fixierte Kosten- und Dauer-Kacheln -->
             <div class="grid grid-cols-2 gap-2 text-center">
-                <div class="p-1 bg-red-100 border border-red-200 rounded-lg">
-                    <p class="text-xs text-red-700 font-bold">KOSTEN</p>
-                    <p class="text-base font-bold text-red-800"><span id="calculatedCost"></span></p>
+                <div class="p-2 bg-slate-50 border border-slate-200/80 rounded-xl h-[56px] flex flex-col justify-center overflow-hidden shadow-sm">
+                    <p class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Kosten</p>
+                    <p class="text-sm font-extrabold text-slate-800"><span id="calculatedCost">-</span></p>
                 </div>
-                <div class="p-1 bg-gray-200 rounded-lg">
-                    <p class="text-xs text-gray-500 font-bold" id="durationLabel">DAUER</p>
-                    <p class="text-base font-bold text-gray-800"><span id="durationDisplay"></span></p>
+                <div class="p-2 bg-slate-50 border border-slate-200/80 rounded-xl h-[56px] flex flex-col justify-center overflow-hidden shadow-sm">
+                    <p class="text-[10px] tracking-wider text-slate-400 font-bold uppercase" id="durationLabel">Dauer</p>
+                    <p class="text-sm font-extrabold text-slate-800"><span id="durationDisplay">-</span></p>
                 </div>
             </div>
 
-            <div id="breakEvenTimeContainer" class="p-2 bg-blue-100 rounded-lg text-center">
-                <p id="breakEvenLabel" class="text-xs text-blue-700">Tageskarte rentabel ab</p>
-                <p id="breakEvenTimeDisplay" class="text-sm font-bold text-blue-800"></p>
+            <!-- Fixiertes Rentabilitäts-Kästchen -->
+            <div id="breakEvenTimeContainer" class="p-1.5 bg-sky-50/80 border border-sky-100 rounded-xl text-center h-[52px] flex flex-col justify-center overflow-hidden shadow-sm transition-all">
+                <p id="breakEvenLabel" class="text-[10px] tracking-wider text-sky-700 font-bold uppercase">Tageskarte rentabel ab</p>
+                <p id="breakEvenTimeDisplay" class="text-sm font-extrabold text-sky-950">-</p>
             </div>
         </div>
 
         <div id="fixedPricesContainer" class="hidden"></div>
     </div>
 
-    <div id="infoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden p-4">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border border-gray-200 space-y-4">
-            <div class="flex justify-between items-center pb-2 border-b border-gray-200">
-                <h2 id="modalTitle" class="text-xl font-bold text-gray-800"></h2>
-                <button id="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+    <!-- Modernisiertes Info-Modal -->
+    <div id="infoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4 transition-all">
+        <div class="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl border border-slate-100 space-y-3.5">
+            <div class="flex justify-between items-center pb-2.5 border-b border-slate-100">
+                <h2 id="modalTitle" class="text-base font-extrabold text-slate-800 tracking-tight"></h2>
+                <button id="closeModal" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <div id="modalContent" class="space-y-4 text-gray-700"></div>
+            <div id="modalContent" class="space-y-3 text-sm text-slate-600"></div>
         </div>
     </div>
 
@@ -162,6 +186,7 @@
             const closeModalButton = document.getElementById('closeModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
+
             const thermeData = {
                 badWoerishofen: {
                     permanentlyClosed: false,
@@ -314,6 +339,13 @@
                 return `${day}.${month}.`;
             }
 
+            function formatDurationText(min) {
+                const h = Math.floor(min / 60);
+                const m = Math.round(min % 60);
+                if (m === 0) return `${h}h`;
+                return `${h}h ${m}min`;
+            }
+
             function getClosingTime(date, hours) {
                 const [endHour, endMinute] = hours.end.split(':').map(Number);
                 const closingTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endHour, endMinute);
@@ -346,24 +378,24 @@
                 const hours = currentTherme.openingHoursData[dayName];
                 const now = getNow();
 
-                nextOpeningHoursDisplay.className = "text-center text-sm p-2 rounded-lg font-medium w-full";
+                nextOpeningHoursDisplay.className = "text-center text-xs p-2 rounded-xl font-medium w-full h-12 flex flex-col justify-center overflow-hidden transition-all shadow-sm";
 
                 if (!hours || currentTherme.permanentlyClosed) {
                     const tomorrow = new Date(date);
                     tomorrow.setDate(date.getDate() + 1);
                     const nextOpen = currentTherme.permanentlyClosed ? null : findNextOpenDate(tomorrow);
 
-                    nextOpeningHoursDisplay.classList.add("bg-amber-100", "text-amber-900", "border", "border-amber-300");
+                    nextOpeningHoursDisplay.classList.add("bg-amber-50", "text-amber-900", "border", "border-amber-200");
                     if (nextOpen && !currentTherme.permanentlyClosed) {
                         const dateStr = formatDateShort(nextOpen.date);
-                        nextOpeningHoursDisplay.innerHTML = `<span class="inline-block px-1.5 py-0.5 mr-1 bg-red-600 text-white rounded font-bold text-xs uppercase">Ruhetag</span> Nächste Öffnung: <strong>${nextOpen.dayName}, ${dateStr}</strong> ab <strong>${nextOpen.hours.start} Uhr</strong>`;
+                        nextOpeningHoursDisplay.innerHTML = `<div><span class="inline-block px-1.5 py-0.5 mr-1 bg-rose-600 text-white rounded font-bold text-[10px] uppercase">Ruhetag</span> Nächste Öffnung:</div><div class="truncate"><strong>${nextOpen.dayName}, ${dateStr}</strong> ab <strong>${nextOpen.hours.start} Uhr</strong></div>`;
                     } else {
                         nextOpeningHoursDisplay.innerHTML = "Dauerhaft geschlossen";
                     }
                     return;
                 }
 
-                nextOpeningHoursDisplay.classList.add("bg-blue-100", "text-blue-800");
+                nextOpeningHoursDisplay.classList.add("bg-sky-50", "text-sky-900", "border", "border-sky-100");
 
                 if (date.toDateString() === now.toDateString()) {
                     const openingTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hours.start.split(':').map(Number));
@@ -379,14 +411,14 @@
                         const nextOpen = findNextOpenDate(tomorrow);
                         if (nextOpen) {
                             const dateStr = formatDateShort(nextOpen.date);
-                            nextOpeningHoursDisplay.innerHTML = `Geschlossen, öffnet am <strong>${nextOpen.dayName}, ${dateStr}</strong> um <strong>${nextOpen.hours.start} Uhr</strong>`;
+                            nextOpeningHoursDisplay.innerHTML = `<div>Geschlossen, öffnet am <strong>${nextOpen.dayName}, ${dateStr}</strong></div><div>um <strong>${nextOpen.hours.start} Uhr</strong></div>`;
                         } else {
                             nextOpeningHoursDisplay.innerHTML = "Geschlossen";
                         }
                     }
                 } else {
                     const dateStr = formatDateShort(date);
-                    nextOpeningHoursDisplay.innerHTML = `Geöffnet <strong>${dayName}, ${dateStr}</strong><br>${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr`;
+                    nextOpeningHoursDisplay.innerHTML = `<div>Geöffnet <strong>${dayName}, ${dateStr}</strong></div><div>${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr</div>`;
                 }
             }
 
@@ -427,11 +459,11 @@
                 const dayPassTicket = currentTherme.ticketPrices.find(t => t.duration === Infinity);
                 
                 if (!fourHourTicket || !dayPassTicket || fourHourTicket.price >= dayPassTicket.price) {
-                    breakEvenTimeContainer.style.display = 'none';
-                    return;
+                    breakEvenTimeContainer.classList.add('invisible');
+                    return '';
                 }
                 
-                breakEvenTimeContainer.style.display = 'block';
+                breakEvenTimeContainer.classList.remove('invisible');
                 breakEvenLabel.textContent = "Tageskarte rentabel ab";
 
                 const costDifference = dayPassTicket.price - fourHourTicket.price;
@@ -477,20 +509,21 @@
                 return `${breakEvenDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
             }
 
-            function getRecommendationColor(result) {
-                 if (result.bestOption.name.includes('2-Stunden')) return 'bg-green-500';
-                 if (result.bestOption.name.includes('4-Stunden')) return 'bg-yellow-500';
-                 return 'bg-blue-500';
+            // Frische, moderne Farbverläufe für die Empfehlungsbox
+            function getRecommendationColor(result) { 
+                if (result.bestOption.name.includes('2-Stunden')) return 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/20'; 
+                if (result.bestOption.name.includes('4-Stunden')) return 'bg-gradient-to-br from-amber-500 to-orange-500 shadow-amber-500/20'; 
+                return 'bg-gradient-to-br from-sky-500 to-blue-600 shadow-sky-500/20';
             }
             
             function handleInvalidInput(message) {
-                recommendationBox.className = 'p-2 rounded-lg text-white font-medium text-center bg-red-500 min-h-[4rem] flex flex-col justify-center';
+                recommendationBox.className = 'p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg h-[106px] flex flex-col justify-center overflow-hidden';
                 targetDateBadge.classList.add('hidden');
                 recommendationText.textContent = message;
-                savingsText.innerHTML = '';
-                calculatedCostDisplay.textContent = '';
+                savingsText.innerHTML = '&nbsp;';
+                calculatedCostDisplay.textContent = '-';
                 breakEvenTimeDisplay.textContent = 'N/A';
-                durationDisplay.textContent = '';
+                durationDisplay.textContent = '-';
                 tomorrowLabel.classList.add('hidden');
             }
 
@@ -528,7 +561,7 @@
                     let plannedDuration = hours * 60 + minutes;
 
                     if (plannedDuration <= 0) {
-                        handleInvalidInput('Dauer muss größer 0 sein.');
+                        handleInvalidInput('Dauer muss größer 0 sein');
                         return;
                     }
 
@@ -557,18 +590,30 @@
                     const openingTime = new Date(dayForCalculation.getFullYear(), dayForCalculation.getMonth(), dayForCalculation.getDate(), ...openingHours.start.split(':').map(Number));
                     const closingTime = getClosingTime(dayForCalculation, openingHours);
 
-                    effectiveEntryTime = new Date(dayForCalculation);
+                    let requestedEntryTime = new Date(dayForCalculation);
                     if (entryTimeValue) {
                         const [entryHour, entryMinute] = entryTimeValue.split(':').map(Number);
-                        effectiveEntryTime.setHours(entryHour, entryMinute, 0, 0);
+                        requestedEntryTime.setHours(entryHour, entryMinute, 0, 0);
                     } else {
-                        effectiveEntryTime.setHours(openingTime.getHours(), openingTime.getMinutes(), 0, 0);
+                        requestedEntryTime.setHours(openingTime.getHours(), openingTime.getMinutes(), 0, 0);
                     }
 
                     if (dayForCalculation.toDateString() === now.toDateString()) {
-                        effectiveEntryTime = new Date(Math.max(effectiveEntryTime.getTime(), now.getTime(), openingTime.getTime()));
+                        effectiveEntryTime = new Date(Math.max(requestedEntryTime.getTime(), now.getTime(), openingTime.getTime()));
                     } else {
-                        effectiveEntryTime = new Date(Math.max(effectiveEntryTime.getTime(), openingTime.getTime()));
+                        effectiveEntryTime = new Date(Math.max(requestedEntryTime.getTime(), openingTime.getTime()));
+                    }
+
+                    let startTimeShifted = false;
+                    if (isRuhetagSkipped) {
+                        startTimeShifted = true;
+                    } else if (entryTimeValue) {
+                        const originalInputDate = new Date(dayForCalculation.getFullYear(), dayForCalculation.getMonth(), dayForCalculation.getDate(), ...entryTimeValue.split(':').map(Number));
+                        if (originalInputDate.getTime() < openingTime.getTime()) {
+                            startTimeShifted = true;
+                        }
+                    } else if (dayForCalculation.toDateString() === now.toDateString() && now.getTime() < openingTime.getTime()) {
+                        startTimeShifted = true;
                     }
 
                     const remainingMinutes = Math.max(0, (closingTime.getTime() - effectiveEntryTime.getTime()) / (1000 * 60));
@@ -579,15 +624,22 @@
                     durationDisplay.textContent = `${effectiveDepartureTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
 
                     const result = findBestOption(durationInMinutes);
-
                     recommendationText.textContent = result.bestOption.name;
 
+                    let messages = [];
+                    if (startTimeShifted) {
+                        messages.push('Beginn angepasst');
+                    }
                     if (maxDurationExceeded) {
-                        recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center bg-red-500 min-h-[4rem] flex flex-col justify-center`;
-                        savingsText.innerHTML = 'Aufenthaltsdauer an Schließzeit angepasst';
+                        messages.push(`Dauer angepasst (max. ${formatDurationText(remainingMinutes)})`);
+                    }
+
+                    if (messages.length > 0) {
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
+                        savingsText.innerHTML = messages.join('<br>');
                     } else {
                         let recommendationColor = getRecommendationColor(result);
-                        recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center ${recommendationColor} min-h-[4rem] flex flex-col justify-center`;
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
                         savingsText.innerHTML = (adjustedMessage ? `${adjustedMessage}` : '') + (result.savings > 0
                             ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                             : 'Dies ist die günstigste Option<br>&nbsp;');
@@ -600,7 +652,7 @@
                 } else {
                     durationLabel.textContent = 'DAUER';
                     if (!entryTimeValue && !departureTimeValue) {
-                        handleInvalidInput('Bitte eine Zeit oder Dauer eingeben.');
+                        handleInvalidInput('Bitte Zeit oder Dauer eingeben.');
                         return;
                     }
 
@@ -674,12 +726,13 @@
                         
                         if (inputTimeOnVisitDay.getTime() < openingTime.getTime()) {
                             effectiveEntryTime = openingTime;
-                            adjustedMessage += 'Aufenthaltsdauer an Öffnungszeit angepasst<br>';
+                            adjustedMessage += 'Beginn angepasst<br>';
                         }
                         
                         if (departureTimeValue && effectiveDepartureTime.getTime() > closingTime.getTime()) {
+                            const maxMin = Math.max(0, (closingTime.getTime() - effectiveEntryTime.getTime()) / (1000 * 60));
                             effectiveDepartureTime = closingTime;
-                            adjustedMessage += `Aufenthaltsdauer an Schließzeit angepasst<br>`;
+                            adjustedMessage += `Dauer angepasst (max. ${formatDurationText(maxMin)})<br>`;
                         }
                     }
                     
@@ -691,10 +744,10 @@
                     recommendationText.textContent = result.bestOption.name;
 
                     if (adjustedMessage) {
-                        recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center bg-red-500 min-h-[4rem] flex flex-col justify-center`;
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
                         savingsText.innerHTML = adjustedMessage.replace(/<br>$/, '');
                     } else {
-                        recommendationBox.className = `p-2 rounded-lg text-white font-medium text-center ${recommendationColor} min-h-[4rem] flex flex-col justify-center`;
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
                         savingsText.innerHTML = result.savings > 0
                             ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                             : 'Dies ist die günstigste Option<br>&nbsp;';
@@ -712,13 +765,13 @@
                     const departureDay = new Date(effectiveDepartureTime);
                     departureDay.setHours(0, 0, 0, 0);
                     
-                    if (entryDay.getTime() !== departureDay.getTime()) {
-                         tomorrowLabel.classList.remove('hidden');
-                    } else {
-                         tomorrowLabel.classList.add('hidden');
+                    if (entryDay.getTime() !== departureDay.getTime()) { 
+                        tomorrowLabel.classList.remove('hidden');
+                    } else { 
+                        tomorrowLabel.classList.add('hidden');
                     }
-                } else {
-                     tomorrowLabel.classList.add('hidden');
+                } else { 
+                    tomorrowLabel.classList.add('hidden');
                 }
             }
             
@@ -798,24 +851,24 @@
                 modalTitle.textContent = thermeName;
                 const sortedDays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
 
-                let contentHtml = '<p class="text-sm font-semibold mb-2 text-gray-800">Öffnungszeiten:</p>';
-                contentHtml += '<table class="w-full text-left border-collapse">';
+                let contentHtml = '<p class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-1">Öffnungszeiten</p>';
+                contentHtml += '<table class="w-full text-left border-collapse text-sm mb-3">';
                 
                 sortedDays.forEach(day => {
                     const hours = data.openingHoursData[day];
-                    contentHtml += `<tr class="border-t border-gray-200">
-                        <td class="py-1 px-1">${day}</td>
-                        <td class="py-1 px-1 text-right font-medium">${hours && !data.permanentlyClosed ? `${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr` : '<span class="text-red-500 font-semibold">Geschlossen</span>'}</td>
+                    contentHtml += `<tr class="border-b border-slate-100">
+                        <td class="py-1 text-slate-600 font-medium">${day}</td>
+                        <td class="py-1 text-right font-semibold">${hours && !data.permanentlyClosed ? `<span class="text-slate-800">${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr</span>` : '<span class="text-rose-500 font-bold text-xs bg-rose-50 px-2 py-0.5 rounded-full">Geschlossen</span>'}</td>
                     </tr>`;
                 });
                 
                 contentHtml += '</table>';
-                contentHtml += '<p class="text-sm font-semibold mt-4 mb-2 text-gray-800">Preise:</p>';
-                contentHtml += '<table class="w-full text-left border-collapse">';
+                contentHtml += '<p class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-1">Preise & Tarife</p>';
+                contentHtml += '<table class="w-full text-left border-collapse text-sm">';
                 data.ticketPrices.forEach(ticket => {
-                    contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">${ticket.name}</td><td class="py-1 px-1 text-right font-medium">${ticket.price.toFixed(2).replace('.', ',')} €</td></tr>`;
+                    contentHtml += `<tr class="border-b border-slate-100"><td class="py-1 text-slate-600 font-medium">${ticket.name}</td><td class="py-1 text-right font-bold text-slate-800">${ticket.price.toFixed(2).replace('.', ',')} €</td></tr>`;
                 });
-                contentHtml += `<tr class="border-t border-gray-200"><td class="py-1 px-1">Verlängerung 30 min.</td><td class="py-1 px-1 text-right font-medium">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
+                contentHtml += `<tr class="border-b border-slate-100"><td class="py-1 text-slate-600 font-medium">Verlängerung 30 min.</td><td class="py-1 text-right font-bold text-slate-800">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
                 contentHtml += '</table>';
 
                 modalContent.innerHTML = contentHtml;
