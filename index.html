@@ -346,6 +346,9 @@
             }
 
             function getClosingTime(date, hours) {
+                if (hours.end === '24:00') {
+                    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+                }
                 const [endHour, endMinute] = hours.end.split(':').map(Number);
                 const closingTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endHour, endMinute);
                 if (endHour === 24) {
@@ -403,7 +406,7 @@
                     if (now.getTime() < openingTime.getTime()) {
                         nextOpeningHoursDisplay.innerHTML = `Öffnet heute um <strong>${hours.start} Uhr</strong>`;
                     } else if (now.getTime() < closingTime.getTime()) {
-                        nextOpeningHoursDisplay.innerHTML = `Heute geöffnet bis <strong>${hours.end.replace('24:00', '00:00')} Uhr</strong>`;
+                        nextOpeningHoursDisplay.innerHTML = `Heute geöffnet bis <strong>${hours.end} Uhr</strong>`;
                     } else {
                         const tomorrow = new Date(now);
                         tomorrow.setDate(now.getDate() + 1);
@@ -417,7 +420,7 @@
                     }
                 } else {
                     const dateStr = formatDateShort(date);
-                    nextOpeningHoursDisplay.innerHTML = `<div>Geöffnet <strong>${dayName}, ${dateStr}</strong></div><div>${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr</div>`;
+                    nextOpeningHoursDisplay.innerHTML = `<div>Geöffnet <strong>${dayName}, ${dateStr}</strong></div><div>${hours.start} - ${hours.end} Uhr</div>`;
                 }
             }
 
@@ -867,7 +870,7 @@
                     const hours = data.openingHoursData[day];
                     contentHtml += `<tr class="border-b border-slate-100">
                         <td class="py-1 text-slate-600 font-medium">${day}</td>
-                        <td class="py-1 text-right font-semibold">${hours && !data.permanentlyClosed ? `<span class="text-slate-800">${hours.start} - ${hours.end.replace('24:00', '00:00')} Uhr</span>` : '<span class="text-rose-500 font-bold text-xs bg-rose-50 px-2 py-0.5 rounded-full">Geschlossen</span>'}</td>
+                        <td class="py-1 text-right font-semibold">${hours && !data.permanentlyClosed ? `<span class="text-slate-800">${hours.start} - ${hours.end} Uhr</span>` : '<span class="text-rose-500 font-bold text-xs bg-rose-50 px-2 py-0.5 rounded-full">Geschlossen</span>'}</td>
                     </tr>`;
                 });
                 
