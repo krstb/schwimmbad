@@ -482,7 +482,7 @@
                 const minutesAvailableToday = Math.round((closingTime.getTime() - effectiveStartTime.getTime()) / (1000 * 60));
 
                 if (minutesToBreakEven > minutesAvailableToday) {
-                    return "Heute nicht rentabel";
+                    return "Heute nicht";
                 }
                 
                 const breakEvenDate = new Date(effectiveStartTime.getTime() + minutesToBreakEven * 60 * 1000);
@@ -560,7 +560,6 @@
                 // Globale Prüfung: Wenn weder Abreisezeit noch Dauer vorhanden sind, abbrechen
                 if (!departureTimeValue && !durationHoursValue && !durationMinutesValue) {
                     if (lastInteractionType === 'duration') {
-                        // Während des Tippens/Löschens der Dauer keinen Sofort-Fehler anzeigen
                         calculatedCostDisplay.textContent = '-';
                         breakEvenTimeDisplay.textContent = '-';
                         tomorrowLabel.classList.add('hidden');
@@ -584,7 +583,6 @@
                     let baseDate = new Date(now);
                     const todayHours = currentTherme.openingHoursData[days[baseDate.getDay()]];
 
-                    // Regel 1: Therme heute geschlossen oder nach Schließzeit -> Nächster Tag
                     if (!todayHours || now.getTime() >= getClosingTime(now, todayHours).getTime()) {
                         baseDate.setDate(baseDate.getDate() + 1);
                     } else if (entryTimeValue) {
@@ -592,7 +590,6 @@
                         const testDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), entryHour, entryMinute, 0, 0);
                         const todayClosing = getClosingTime(now, todayHours);
                         
-                        // Regel 2 & 5: Eingabe < aktuelle Uhrzeit oder > Schließzeit -> Nächster Tag
                         if (testDate.getTime() < now.getTime() || testDate.getTime() > todayClosing.getTime()) {
                             baseDate.setDate(baseDate.getDate() + 1);
                         }
@@ -618,7 +615,6 @@
                         const [entryHour, entryMinute] = entryTimeValue.split(':').map(Number);
                         requestedEntryTime.setHours(entryHour, entryMinute, 0, 0);
 
-                        // Regel 3 & 5 angewendet auf den Zieltag
                         if (requestedEntryTime.getTime() < openingTime.getTime()) {
                             entryTimeInput.value = openingHours.start;
                             requestedEntryTime = new Date(openingTime);
@@ -688,7 +684,6 @@
                     let targetDate = new Date(now);
                     const todayHours = currentTherme.openingHoursData[days[targetDate.getDay()]];
 
-                    // Regel 1: Therme heute geschlossen oder nach Schließzeit -> Nächster Tag
                     if (!todayHours || now.getTime() >= getClosingTime(now, todayHours).getTime()) {
                         targetDate.setDate(targetDate.getDate() + 1);
                     } else if (entryTimeValue && !departureTimeValue) {
@@ -696,7 +691,6 @@
                         const testDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), entryHour, entryMinute, 0, 0);
                         const todayClosing = getClosingTime(now, todayHours);
 
-                        // Regel 2: Eingabe < aktuelle Uhrzeit -> Nächster Tag (ohne heutigen Zeit-Fallback)
                         if (testDate.getTime() < now.getTime() || testDate.getTime() > todayClosing.getTime()) {
                             targetDate.setDate(targetDate.getDate() + 1);
                         }
@@ -758,23 +752,19 @@
                         effectiveDepartureTime = new Date(effectiveEntryTime.getTime() + 3 * 60 * 60 * 1000);
                     }
 
-                    // Regeln 3, 4 und 5 für den Beginn (Eingabe)
                     if (entryTimeValue) {
                         const [entryH, entryM] = entryTimeInput.value.split(':').map(Number);
                         const inputTimeOnVisitDay = new Date(dayForCalculation.getFullYear(), dayForCalculation.getMonth(), dayForCalculation.getDate(), entryH, entryM);
                         
                         if (inputTimeOnVisitDay.getTime() < openingTime.getTime()) {
-                            // Regel 3: Eingabe < Öffnungszeiten -> Setze Öffnungszeiten
                             entryTimeInput.value = entryDayHours.start;
                             effectiveEntryTime = openingTime;
                             adjustedMessage += 'Beginn auf Öffnungszeit angepasst<br>';
                         } else if (inputTimeOnVisitDay.getTime() > closingTime.getTime()) {
-                            // Regel 5: Eingabe > Schließzeiten -> Setze Schließzeiten
                             entryTimeInput.value = entryDayHours.end;
                             effectiveEntryTime = closingTime;
                             adjustedMessage += 'Beginn auf Schließzeit angepasst<br>';
                         } else {
-                            // Regel 4: Eingabe >= Öffnungszeiten & <= Schließen -> Keine Änderung
                             effectiveEntryTime = inputTimeOnVisitDay;
                         }
                     }
@@ -885,6 +875,8 @@
 
             function initializeUI() {
                 currentTherme = thermeData[thermeSelect.value];
+                
+                // Beim Badwechsel den Modus zurücksetzen, damit die Startzeit des neuen Bades mitläuft
                 isEntryTimeUserModified = false;
 
                 const now = getNow();
@@ -917,9 +909,8 @@
                     }
                 }
                 
-                if (!entryTimeInput.value) {
-                    entryTimeInput.value = effectiveStartTime;
-                }
+                // Startzeit mit der aktuellen Zeit/Öffnungszeit des gewählten Bades belegen
+                entryTimeInput.value = effectiveStartTime;
                 
                 if (lastInteractionType === 'time') {
                     if (!departureTimeInput.value) {
@@ -981,8 +972,11 @@
 
             function startUpdateInterval() {
                 setInterval(() => {
-                    // Prüfen, ob gerade in keinem Feld getippt wird UND die Startzeit noch nicht manuell geändert wurde
-                    if (!document.activeElement.matches('input[type="time"], input[type="number"], select') && !isEntryTimeUserModified) {
+                    // Der Timer pausiert jetzt NUR noch, wenn der Nutzer direkt im Startzeit-Feld tippt oder es fokussiert hat,
+                    // oder wenn er die Startzeit manuell überschrieben hat.
+                    const isEntryFocused = (document.activeElement === entryTimeInput);
+
+                    if (!isEntryFocused && !isEntryTimeUserModified) {
                         const now = getNow();
                         const todayHours = currentTherme.openingHoursData[days[now.getDay()]];
                         
@@ -996,7 +990,7 @@
                             }
                         }
                     }
-                }, 1000); // Alle 1 Sekunden
+                }, 10000); // Alle 10 Sekunden
             }
 
             startUpdateInterval();
