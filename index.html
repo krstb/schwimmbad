@@ -132,7 +132,7 @@
                     <p class="text-sm font-extrabold text-slate-800"><span id="calculatedCost">-</span></p>
                 </div>
                 <div id="breakEvenTimeContainer" class="p-2 bg-slate-50 border border-slate-200/80 rounded-xl h-[56px] flex flex-col justify-center overflow-hidden shadow-sm transition-all">
-                    <p id="breakEvenLabel" class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Tageskarte rentabel ab</p>
+                    <p id="breakEvenLabel" class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Tageskarte rentabel</p>
                     <p id="breakEvenTimeDisplay" class="text-sm font-extrabold text-slate-800">-</p>
                 </div>
             </div>
@@ -462,7 +462,7 @@
                 }
                 
                 breakEvenTimeContainer.classList.remove('invisible');
-                breakEvenLabel.textContent = "Tageskarte rentabel ab";
+                breakEvenLabel.textContent = "Tageskarte rentabel";
 
                 const costDifference = dayPassTicket.price - fourHourTicket.price;
                 const maxExtensionsCheaper = Math.floor((costDifference - 0.01) / currentTherme.extensionCost);
@@ -996,7 +996,7 @@
                             }
                         }
                     }
-                }, 10000); // Alle 10 Sekunden
+                }, 1000); // Alle 1 Sekunden
             }
 
             startUpdateInterval();
