@@ -312,6 +312,7 @@
             let currentTherme = thermeData[thermeSelect.value];
             const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
             let lastInteractionType = 'time';
+            let isEntryTimeUserModified = false;
             let clearMessageTimer = null;
 
             function getNow() {
@@ -856,6 +857,7 @@
 
                 if (targetId === 'entryTime') {
                     lastInteractionType = 'time';
+                    isEntryTimeUserModified = true; // Nutzer hat Startzeit manuell berührt
                 } else if (targetId === 'departureTime') {
                     lastInteractionType = 'time';
                     durationHoursInput.value = '';
@@ -883,6 +885,7 @@
 
             function initializeUI() {
                 currentTherme = thermeData[thermeSelect.value];
+                isEntryTimeUserModified = false;
 
                 const now = getNow();
                 let nextOpen = currentTherme.permanentlyClosed ? null : findNextOpenDate(now);
@@ -938,6 +941,7 @@
                 durationHoursInput.value = '';
                 durationMinutesInput.value = '';
                 lastInteractionType = 'time';
+                isEntryTimeUserModified = false;
                 initializeUI();
             }
 
@@ -977,10 +981,22 @@
 
             function startUpdateInterval() {
                 setInterval(() => {
-                    if (!document.activeElement.matches('input[type="time"], input[type="number"], select')) {
-                        calculateAndDisplay(); 
+                    // Prüfen, ob gerade in keinem Feld getippt wird UND die Startzeit noch nicht manuell geändert wurde
+                    if (!document.activeElement.matches('input[type="time"], input[type="number"], select') && !isEntryTimeUserModified) {
+                        const now = getNow();
+                        const todayHours = currentTherme.openingHoursData[days[now.getDay()]];
+                        
+                        if (todayHours && now.getTime() < getClosingTime(now, todayHours).getTime()) {
+                            const [openH, openM] = todayHours.start.split(':').map(Number);
+                            const openingTimeDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), openH, openM, 0, 0);
+                            
+                            if (now.getTime() >= openingTimeDate.getTime()) {
+                                entryTimeInput.value = getNowTimeFormatted();
+                                calculateAndDisplay();
+                            }
+                        }
                     }
-                }, 10000);
+                }, 10000); // Alle 10 Sekunden
             }
 
             startUpdateInterval();
