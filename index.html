@@ -550,10 +550,24 @@
                 let durationInMinutes = 0;
                 let adjustedMessage = '';
                 
+                // Prüfung: Wenn Startzeit gelöscht wurde, sofort Fehlermeldung ausgeben
+                if (!entryTimeValue) {
+                    handleInvalidInput('Bitte Beginn eingeben.');
+                    return;
+                }
+
                 // Globale Prüfung: Wenn weder Abreisezeit noch Dauer vorhanden sind, abbrechen
                 if (!departureTimeValue && !durationHoursValue && !durationMinutesValue) {
-                    handleInvalidInput('Bitte Abreise oder Dauer eingeben.');
-                    return;
+                    if (lastInteractionType === 'duration') {
+                        // Während des Tippens/Löschens der Dauer keinen Sofort-Fehler anzeigen
+                        calculatedCostDisplay.textContent = '-';
+                        breakEvenTimeDisplay.textContent = '-';
+                        tomorrowLabel.classList.add('hidden');
+                        return;
+                    } else {
+                        handleInvalidInput('Bitte Abreise oder Dauer eingeben.');
+                        return;
+                    }
                 }
                 
                 if (lastInteractionType === 'duration' && (durationHoursValue || durationMinutesValue)) {
@@ -854,6 +868,19 @@
                 calculateAndDisplay();
             }
 
+            // Handler beim Verlassen (Blur) der Dauer-Eingabefelder
+            function handleDurationBlur() {
+                if (lastInteractionType === 'duration') {
+                    const hoursVal = durationHoursInput.value.trim();
+                    const minsVal = durationMinutesInput.value.trim();
+                    if (hoursVal === '' && minsVal === '' && !departureTimeInput.value) {
+                        handleInvalidInput('Bitte Abreise oder Dauer eingeben.');
+                        return;
+                    }
+                }
+                calculateAndDisplay();
+            }
+
             function initializeUI() {
                 currentTherme = thermeData[thermeSelect.value];
 
@@ -964,6 +991,10 @@
             departureTimeInput.addEventListener('input', handleInput);
             durationHoursInput.addEventListener('input', handleInput);
             durationMinutesInput.addEventListener('input', handleInput);
+            
+            // Blur-Event-Listener für die Dauer-Felder
+            durationHoursInput.addEventListener('blur', handleDurationBlur);
+            durationMinutesInput.addEventListener('blur', handleDurationBlur);
             
             infoButton.addEventListener('click', openInfoModal);
             closeModalButton.addEventListener('click', () => {
