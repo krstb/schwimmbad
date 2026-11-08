@@ -561,16 +561,19 @@
                     }
 
                     let baseDate = new Date(now);
-                    if (entryTimeValue) {
+                    const todayHours = currentTherme.openingHoursData[days[baseDate.getDay()]];
+
+                    // Regel 1: Therme heute geschlossen oder nach Schließzeit -> Nächster Tag
+                    if (!todayHours || now.getTime() >= getClosingTime(now, todayHours).getTime()) {
+                        baseDate.setDate(baseDate.getDate() + 1);
+                    } else if (entryTimeValue) {
                         const [entryHour, entryMinute] = entryTimeValue.split(':').map(Number);
                         const testDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), entryHour, entryMinute, 0, 0);
-                        const todayHours = currentTherme.openingHoursData[days[now.getDay()]];
+                        const todayClosing = getClosingTime(now, todayHours);
                         
-                        if (todayHours) {
-                            const todayClosing = getClosingTime(now, todayHours);
-                            if (testDate.getTime() > todayClosing.getTime()) {
-                                baseDate.setDate(baseDate.getDate() + 1);
-                            }
+                        // Regel 2 & 5: Eingabe < aktuelle Uhrzeit oder > Schließzeit -> Nächster Tag
+                        if (testDate.getTime() < now.getTime() || testDate.getTime() > todayClosing.getTime()) {
+                            baseDate.setDate(baseDate.getDate() + 1);
                         }
                     }
 
@@ -594,6 +597,7 @@
                         const [entryHour, entryMinute] = entryTimeValue.split(':').map(Number);
                         requestedEntryTime.setHours(entryHour, entryMinute, 0, 0);
 
+                        // Regel 3 & 5 angewendet auf den Zieltag
                         if (requestedEntryTime.getTime() < openingTime.getTime()) {
                             entryTimeInput.value = openingHours.start;
                             requestedEntryTime = new Date(openingTime);
@@ -607,22 +611,9 @@
                         requestedEntryTime.setHours(openingTime.getHours(), openingTime.getMinutes(), 0, 0);
                     }
 
-                    if (dayForCalculation.toDateString() === now.toDateString()) {
-                        effectiveEntryTime = new Date(Math.max(requestedEntryTime.getTime(), openingTime.getTime()));
-                    } else {
-                        effectiveEntryTime = new Date(Math.max(requestedEntryTime.getTime(), openingTime.getTime()));
-                    }
+                    effectiveEntryTime = new Date(Math.max(requestedEntryTime.getTime(), openingTime.getTime()));
 
-                    let startTimeShifted = false;
-                    if (isRuhetagSkipped) {
-                        startTimeShifted = true;
-                    } else if (entryTimeValue) {
-                        const originalInputDate = new Date(dayForCalculation.getFullYear(), dayForCalculation.getMonth(), dayForCalculation.getDate(), ...entryTimeValue.split(':').map(Number));
-                        if (originalInputDate.getTime() < openingTime.getTime()) {
-                            startTimeShifted = true;
-                        }
-                    }
-
+                    let startTimeShifted = isRuhetagSkipped;
                     const remainingMinutes = Math.max(0, (closingTime.getTime() - effectiveEntryTime.getTime()) / (1000 * 60));
                     const maxDurationExceeded = plannedDuration > remainingMinutes;
 
@@ -644,18 +635,14 @@
                     recommendationText.textContent = result.bestOption.name;
 
                     let messages = [];
-                    if (startTimeShifted) {
-                        messages.push('Beginn auf Öffnungszeit angepasst');
-                    }
-                    if (maxDurationExceeded) {
-                        messages.push(`Dauer angepasst (max. ${formatDurationText(remainingMinutes)})`);
-                    }
+                    if (startTimeShifted) messages.push('Beginn auf Öffnungszeit angepasst');
+                    if (maxDurationExceeded) messages.push(`Dauer angepasst (max. ${formatDurationText(remainingMinutes)})`);
 
                     clearTimeout(clearMessageTimer);
 
-                    if (messages.length > 0) {
+                    if (messages.length > 0 || adjustedMessage) {
                         recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
-                        savingsText.innerHTML = messages.join('<br>');
+                        savingsText.innerHTML = (adjustedMessage ? adjustedMessage : '') + messages.join('<br>');
                         
                         clearMessageTimer = setTimeout(() => {
                             let recommendationColor = getRecommendationColor(result);
@@ -667,9 +654,9 @@
                     } else {
                         let recommendationColor = getRecommendationColor(result);
                         recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
-                        savingsText.innerHTML = (adjustedMessage ? `${adjustedMessage}` : '') + (result.savings > 0
+                        savingsText.innerHTML = result.savings > 0
                             ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
-                            : 'Dies ist die günstigste Option<br>&nbsp;');
+                            : 'Dies ist die günstigste Option<br>&nbsp;';
                     }
                     
                     breakEvenTimeDisplay.textContent = getBreakEvenTime(effectiveEntryTime) || 'Nicht relevant';
@@ -683,34 +670,36 @@
                     }
 
                     let targetDate = new Date(now);
+                    const todayHours = currentTherme.openingHoursData[days[targetDate.getDay()]];
 
-                    if (entryTimeValue && departureTimeValue) {
+                    // Regel 1: Therme heute geschlossen oder nach Schließzeit -> Nächster Tag
+                    if (!todayHours || now.getTime() >= getClosingTime(now, todayHours).getTime()) {
+                        targetDate.setDate(targetDate.getDate() + 1);
+                    } else if (entryTimeValue && !departureTimeValue) {
                         const [entryHour, entryMinute] = entryTimeValue.split(':').map(Number);
                         const testDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), entryHour, entryMinute, 0, 0);
-                        const todayHours = currentTherme.openingHoursData[days[now.getDay()]];
+                        const todayClosing = getClosingTime(now, todayHours);
+
+                        // Regel 2: Eingabe < aktuelle Uhrzeit -> Nächster Tag (ohne heutigen Zeit-Fallback)
+                        if (testDate.getTime() < now.getTime() || testDate.getTime() > todayClosing.getTime()) {
+                            targetDate.setDate(targetDate.getDate() + 1);
+                        }
+                    } else if (entryTimeValue && departureTimeValue) {
+                        const [entryHour, entryMinute] = entryTimeValue.split(':').map(Number);
+                        const testDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), entryHour, entryMinute, 0, 0);
+                        const todayClosing = getClosingTime(now, todayHours);
                         
-                        if (todayHours) {
-                            const todayClosing = getClosingTime(now, todayHours);
-                            if (testDate.getTime() > todayClosing.getTime()) {
-                                targetDate.setDate(targetDate.getDate() + 1);
-                            }
+                        if (testDate.getTime() < now.getTime() || testDate.getTime() > todayClosing.getTime()) {
+                            targetDate.setDate(targetDate.getDate() + 1);
                         }
                     } else if (departureTimeValue) {
                         const [departureHour, departureMinute] = departureTimeValue.split(':').map(Number);
                         const intendedDeparture = new Date(now.getFullYear(), now.getMonth(), now.getDate(), departureHour, departureMinute);
-                        const todayHours = currentTherme.openingHoursData[days[now.getDay()]];
+                        const todayClosingTime = getClosingTime(now, todayHours);
 
-                        if (todayHours) {
-                            const todayClosingTime = getClosingTime(now, todayHours);
-                            if (now.getTime() >= todayClosingTime.getTime() || (intendedDeparture.getTime() <= now.getTime() && intendedDeparture.getHours() < 6)) {
-                                targetDate.setDate(targetDate.getDate() + 1);
-                            }
-                        } else if (intendedDeparture.getTime() <= now.getTime()) {
+                        if (now.getTime() >= todayClosingTime.getTime() || (intendedDeparture.getTime() <= now.getTime() && intendedDeparture.getHours() < 6)) {
                             targetDate.setDate(targetDate.getDate() + 1);
                         }
-                    } else {
-                        handleInvalidInput('Bitte Kommen und Gehenzeit oder Dauer eingeben.');
-                        return;
                     }
 
                     const nextOpen = findNextOpenDate(targetDate);
@@ -747,20 +736,30 @@
                         if (effectiveDepartureTime.getTime() <= effectiveEntryTime.getTime()) {
                             effectiveDepartureTime.setDate(effectiveDepartureTime.getDate() + 1);
                         }
+                    } else if (entryTimeValue) {
+                        const [entryHour, entryMinute] = entryTimeValue.split(':').map(Number);
+                        effectiveEntryTime = new Date(dayForCalculation.getFullYear(), dayForCalculation.getMonth(), dayForCalculation.getDate(), entryHour, entryMinute);
+                        effectiveDepartureTime = new Date(effectiveEntryTime.getTime() + 3 * 60 * 60 * 1000);
                     }
 
+                    // Regeln 3, 4 und 5 für den Beginn (Eingabe)
                     if (entryTimeValue) {
                         const [entryH, entryM] = entryTimeInput.value.split(':').map(Number);
                         const inputTimeOnVisitDay = new Date(dayForCalculation.getFullYear(), dayForCalculation.getMonth(), dayForCalculation.getDate(), entryH, entryM);
                         
                         if (inputTimeOnVisitDay.getTime() < openingTime.getTime()) {
+                            // Regel 3: Eingabe < Öffnungszeiten -> Setze Öffnungszeiten
                             entryTimeInput.value = entryDayHours.start;
                             effectiveEntryTime = openingTime;
                             adjustedMessage += 'Beginn auf Öffnungszeit angepasst<br>';
                         } else if (inputTimeOnVisitDay.getTime() > closingTime.getTime()) {
+                            // Regel 5: Eingabe > Schließzeiten -> Setze Schließzeiten
                             entryTimeInput.value = entryDayHours.end;
                             effectiveEntryTime = closingTime;
                             adjustedMessage += 'Beginn auf Schließzeit angepasst<br>';
+                        } else {
+                            // Regel 4: Eingabe >= Öffnungszeiten & <= Schließen -> Keine Änderung
+                            effectiveEntryTime = inputTimeOnVisitDay;
                         }
                     }
                     
