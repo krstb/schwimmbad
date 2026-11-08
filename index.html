@@ -551,13 +551,11 @@
                 let durationInMinutes = 0;
                 let adjustedMessage = '';
                 
-                // Prüfung: Wenn Startzeit gelöscht wurde, sofort Fehlermeldung ausgeben
                 if (!entryTimeValue) {
                     handleInvalidInput('Bitte Beginn eingeben.');
                     return;
                 }
 
-                // Globale Prüfung: Wenn weder Abreisezeit noch Dauer vorhanden sind, abbrechen
                 if (!departureTimeValue && !durationHoursValue && !durationMinutesValue) {
                     if (lastInteractionType === 'duration') {
                         calculatedCostDisplay.textContent = '-';
@@ -847,7 +845,7 @@
 
                 if (targetId === 'entryTime') {
                     lastInteractionType = 'time';
-                    isEntryTimeUserModified = true; // Nutzer hat Startzeit manuell berührt
+                    isEntryTimeUserModified = true; 
                 } else if (targetId === 'departureTime') {
                     lastInteractionType = 'time';
                     durationHoursInput.value = '';
@@ -860,7 +858,6 @@
                 calculateAndDisplay();
             }
 
-            // Handler beim Verlassen (Blur) der Dauer-Eingabefelder
             function handleDurationBlur() {
                 if (lastInteractionType === 'duration') {
                     const hoursVal = durationHoursInput.value.trim();
@@ -875,9 +872,6 @@
 
             function initializeUI() {
                 currentTherme = thermeData[thermeSelect.value];
-                
-                // Beim Badwechsel den Modus zurücksetzen, damit die Startzeit des neuen Bades mitläuft
-                isEntryTimeUserModified = false;
 
                 const now = getNow();
                 let nextOpen = currentTherme.permanentlyClosed ? null : findNextOpenDate(now);
@@ -909,8 +903,9 @@
                     }
                 }
                 
-                // Startzeit mit der aktuellen Zeit/Öffnungszeit des gewählten Bades belegen
-                entryTimeInput.value = effectiveStartTime;
+                if (!isEntryTimeUserModified) {
+                    entryTimeInput.value = effectiveStartTime;
+                }
                 
                 if (lastInteractionType === 'time') {
                     if (!departureTimeInput.value) {
@@ -924,7 +919,6 @@
                 calculateAndDisplay();
             }
 
-            // Vollständiger App-Reset auf Klick
             function resetApp() {
                 thermeSelect.selectedIndex = 0;
                 entryTimeInput.value = '';
@@ -972,8 +966,6 @@
 
             function startUpdateInterval() {
                 setInterval(() => {
-                    // Der Timer pausiert jetzt NUR noch, wenn der Nutzer direkt im Startzeit-Feld tippt oder es fokussiert hat,
-                    // oder wenn er die Startzeit manuell überschrieben hat.
                     const isEntryFocused = (document.activeElement === entryTimeInput);
 
                     if (!isEntryFocused && !isEntryTimeUserModified) {
@@ -990,7 +982,7 @@
                             }
                         }
                     }
-                }, 10000); // Alle 10 Sekunden
+                }, 10000);
             }
 
             startUpdateInterval();
@@ -1002,7 +994,6 @@
             durationHoursInput.addEventListener('input', handleInput);
             durationMinutesInput.addEventListener('input', handleInput);
             
-            // Blur-Event-Listener für die Dauer-Felder
             durationHoursInput.addEventListener('blur', handleDurationBlur);
             durationMinutesInput.addEventListener('blur', handleDurationBlur);
             
