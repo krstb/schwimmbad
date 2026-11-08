@@ -550,6 +550,12 @@
                 let durationInMinutes = 0;
                 let adjustedMessage = '';
                 
+                // Globale Prüfung: Wenn weder Abreisezeit noch Dauer vorhanden sind, abbrechen
+                if (!departureTimeValue && !durationHoursValue && !durationMinutesValue) {
+                    handleInvalidInput('Bitte Abreise oder Dauer eingeben.');
+                    return;
+                }
+                
                 if (lastInteractionType === 'duration' && (durationHoursValue || durationMinutesValue)) {
                     const hours = parseInt(durationHoursValue) || 0;
                     const minutes = parseInt(durationMinutesInput.value) || 0;
@@ -664,11 +670,6 @@
                     displayOpeningHours(dayForCalculation);
 
                 } else {
-                    if (!entryTimeValue && !departureTimeValue) {
-                        handleInvalidInput('Bitte Zeit oder Dauer eingeben.');
-                        return;
-                    }
-
                     let targetDate = new Date(now);
                     const todayHours = currentTherme.openingHoursData[days[targetDate.getDay()]];
 
