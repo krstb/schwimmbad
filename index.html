@@ -59,9 +59,6 @@
                 </div>
                 <h1 class="text-base font-extrabold tracking-tight text-slate-800">Robert's Eintrittsrechner</h1>
             </div>
-            <button type="button" id="infoButton" class="w-7 h-7 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors shadow-inner" title="Öffnungszeiten & Preise">
-                <span class="text-xs font-bold font-serif italic">i</span>
-            </button>
         </div>
 
         <!-- Bad-Auswahl & Öffnungszeiten -->
@@ -84,8 +81,13 @@
                 </div>
             </div>
 
-            <!-- Öffnungszeiten-Box -->
-            <div id="nextOpeningHoursDisplay" class="text-center text-xs p-2 bg-sky-50 text-sky-900 border border-sky-100 rounded-xl font-medium w-full h-12 flex flex-col justify-center overflow-hidden transition-all shadow-sm"></div>
+            <!-- Öffnungszeiten-Box mit integriertem i-Button -->
+            <div class="relative">
+                <div id="nextOpeningHoursDisplay" class="text-center text-xs p-2 pr-8 bg-sky-50 text-sky-900 border border-sky-100 rounded-xl font-medium w-full h-12 flex flex-col justify-center overflow-hidden transition-all shadow-sm"></div>
+                <button type="button" id="infoButton" class="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-white/80 hover:bg-white text-sky-700 hover:text-sky-900 transition-colors shadow-sm border border-sky-100" title="Öffnungszeiten & Preise">
+                    <span class="text-xs font-bold font-serif italic">i</span>
+                </button>
+            </div>
         </div>
 
         <!-- Eingaben (Zeiten / Dauer) -->
@@ -123,7 +125,7 @@
                 <p id="savingsText" class="mt-0.5 text-xs text-white/90 leading-tight">&nbsp;</p>
             </div>
 
-            <!-- Kosten- und Rentabilitäts-Kacheln mit identischem Styling -->
+            <!-- Kosten- und Rentabilitäts-Kacheln -->
             <div class="grid grid-cols-2 gap-2 text-center">
                 <div class="p-2 bg-slate-50 border border-slate-200/80 rounded-xl h-[56px] flex flex-col justify-center overflow-hidden shadow-sm">
                     <p class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Kosten</p>
@@ -373,7 +375,7 @@
                 const hours = currentTherme.openingHoursData[dayName];
                 const now = getNow();
 
-                nextOpeningHoursDisplay.className = "text-center text-xs p-2 rounded-xl font-medium w-full h-12 flex flex-col justify-center overflow-hidden transition-all shadow-sm";
+                nextOpeningHoursDisplay.className = "text-center text-xs p-2 pr-8 rounded-xl font-medium w-full h-12 flex flex-col justify-center overflow-hidden transition-all shadow-sm";
 
                 if (!hours || currentTherme.permanentlyClosed) {
                     const tomorrow = new Date(date);
@@ -564,7 +566,6 @@
                         const testDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), entryHour, entryMinute, 0, 0);
                         const todayHours = currentTherme.openingHoursData[days[now.getDay()]];
                         
-                        // Erst wenn die Zeit nach der heutigen Schließzeit liegt, wird auf den nächsten Tag gewechselt
                         if (todayHours) {
                             const todayClosing = getClosingTime(now, todayHours);
                             if (testDate.getTime() > todayClosing.getTime()) {
@@ -740,9 +741,7 @@
                     } else if (departureTimeValue) {
                         const [departureHour, departureMinute] = departureTimeValue.split(':').map(Number);
 
-                        effectiveEntryTime = (dayForCalculation.toDateString() === now.toDateString())
-                            ? openingTime
-                            : openingTime;
+                        effectiveEntryTime = openingTime;
 
                         effectiveDepartureTime = new Date(dayForCalculation.getFullYear(), dayForCalculation.getMonth(), dayForCalculation.getDate(), departureHour, departureMinute);
                         if (effectiveDepartureTime.getTime() <= effectiveEntryTime.getTime()) {
