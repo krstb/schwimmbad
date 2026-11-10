@@ -546,13 +546,17 @@
                 const baseTicket = currentTherme.ticketPrices.find(t => t.duration === 240) || currentTherme.ticketPrices.find(t => t.duration !== Infinity);
                 const dayPassTicket = currentTherme.ticketPrices.find(t => t.duration === Infinity);
                 
-                if (!baseTicket || !dayPassTicket || baseTicket.price >= dayPassTicket.price) {
-                    breakEvenTimeContainer.classList.add('invisible');
-                    return '';
-                }
-                
+                // Sichtbarkeit beibehalten (kein .add('invisible'))
                 breakEvenTimeContainer.classList.remove('invisible');
                 breakEvenLabel.textContent = "Tageskarte ab";
+
+                if (!dayPassTicket) {
+                    return "-";
+                }
+                
+                if (!baseTicket || baseTicket.price >= dayPassTicket.price) {
+                    return "-";
+                }
 
                 let minutesToBreakEven;
                 const hasExtension = currentTherme.extensionCost && currentTherme.extensionCost > 0;
@@ -603,7 +607,7 @@
                 recommendationText.textContent = message;
                 savingsText.innerHTML = '&nbsp;';
                 calculatedCostDisplay.textContent = '-';
-                breakEvenTimeDisplay.textContent = 'N/A';
+                breakEvenTimeDisplay.textContent = '-';
                 tomorrowLabel.classList.add('hidden');
             }
 
