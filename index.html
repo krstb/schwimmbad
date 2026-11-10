@@ -381,8 +381,8 @@
             function formatDurationText(min) {
                 const h = Math.floor(min / 60);
                 const m = Math.round(min % 60);
-                if (m === 0) return `${h}h`;
-                return `${h}h ${m}min`;
+                if (m === 0) return `${h} Std.`;
+                return `${h} Std. ${m}min`;
             }
 
             function getClosingTime(date, hours) {
@@ -607,7 +607,7 @@
                         tomorrowLabel.classList.add('hidden');
                         return;
                     } else {
-                        handleInvalidInput('Bitte Abreise oder Dauer eingeben.');
+                        handleInvalidInput('Bitte Abreise oder Dauer eingeben');
                         return;
                     }
                 }
