@@ -141,9 +141,9 @@
             </div>
         </div>
 
-        <!-- Ergebnisse -->
+        <!-- Ergebnisse (flexible Mindesthöhe min-h-[106px]) -->
         <div id="results" class="space-y-2 pt-1">
-            <div id="recommendationBox" class="p-2 rounded-2xl text-white font-medium text-center shadow-lg transition-colors duration-500 h-[106px] flex flex-col justify-center overflow-hidden">
+            <div id="recommendationBox" class="p-2 rounded-2xl text-white font-medium text-center shadow-lg transition-colors duration-500 min-h-[106px] flex flex-col justify-center overflow-hidden">
                 <div id="targetDateBadge" class="hidden inline-block mx-auto mb-0.5 px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded-md text-[10px] font-bold tracking-wide uppercase"></div>
                 <p id="recommendationText" class="text-base font-extrabold tracking-tight">Warte auf Eingabe</p>
                 <p id="savingsText" class="mt-0.5 text-xs text-white/90 leading-tight">&nbsp;</p>
@@ -155,7 +155,7 @@
                     <p class="text-sm font-extrabold text-slate-800"><span id="calculatedCost">-</span></p>
                 </div>
                 <div id="breakEvenTimeContainer" class="p-2 bg-slate-50 border border-slate-200/80 rounded-xl h-[56px] flex flex-col justify-center overflow-hidden shadow-sm transition-all">
-                    <p id="breakEvenLabel" class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Große Karte ab</p>
+                    <p id="breakEvenLabel" class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Tageskarte ab</p>
                     <p id="breakEvenTimeDisplay" class="text-sm font-extrabold text-slate-800">-</p>
                 </div>
             </div>
@@ -551,7 +551,7 @@
                 }
                 
                 breakEvenTimeContainer.classList.remove('invisible');
-                breakEvenLabel.textContent = "Große Karte ab";
+                breakEvenLabel.textContent = "Tageskarte ab";
 
                 let minutesToBreakEven;
                 const hasExtension = currentTherme.extensionCost && currentTherme.extensionCost > 0;
@@ -597,7 +597,7 @@
             
             function handleInvalidInput(message) {
                 clearTimeout(clearMessageTimer);
-                recommendationBox.className = 'p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg h-[106px] flex flex-col justify-center overflow-hidden';
+                recommendationBox.className = 'p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg min-h-[106px] flex flex-col justify-center overflow-hidden';
                 targetDateBadge.classList.add('hidden');
                 recommendationText.textContent = message;
                 savingsText.innerHTML = '&nbsp;';
@@ -737,19 +737,19 @@
                     clearTimeout(clearMessageTimer);
 
                     if (messages.length > 0 || adjustedMessage) {
-                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg min-h-[106px] flex flex-col justify-center overflow-hidden`;
                         savingsText.innerHTML = (adjustedMessage ? adjustedMessage : '') + messages.join('<br>');
                         
                         clearMessageTimer = setTimeout(() => {
                             let recommendationColor = getRecommendationColor(result);
-                            recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg h-[106px] flex flex-col justify-center overflow-hidden transition-colors duration-500`;
+                            recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg min-h-[106px] flex flex-col justify-center overflow-hidden transition-colors duration-500`;
                             savingsText.innerHTML = result.savings > 0
                                 ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                                 : 'Dies ist die günstigste Option<br>&nbsp;';
                         }, 4000);
                     } else {
                         let recommendationColor = getRecommendationColor(result);
-                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg min-h-[106px] flex flex-col justify-center overflow-hidden`;
                         savingsText.innerHTML = result.savings > 0
                             ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                             : 'Dies ist die günstigste Option<br>&nbsp;';
@@ -885,17 +885,17 @@
                     clearTimeout(clearMessageTimer);
 
                     if (adjustedMessage) {
-                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/20 shadow-lg min-h-[106px] flex flex-col justify-center overflow-hidden`;
                         savingsText.innerHTML = adjustedMessage.replace(/<br>$/, '');
                         
                         clearMessageTimer = setTimeout(() => {
-                            recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg h-[106px] flex flex-col justify-center overflow-hidden transition-colors duration-500`;
+                            recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg min-h-[106px] flex flex-col justify-center overflow-hidden transition-colors duration-500`;
                             savingsText.innerHTML = result.savings > 0
                                 ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                                 : 'Dies ist die günstigste Option<br>&nbsp;';
                         }, 4000);
                     } else {
-                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg h-[106px] flex flex-col justify-center overflow-hidden`;
+                        recommendationBox.className = `p-2 rounded-2xl text-white font-medium text-center ${recommendationColor} shadow-lg min-h-[106px] flex flex-col justify-center overflow-hidden`;
                         savingsText.innerHTML = result.savings > 0
                             ? `Du sparst ${result.savings.toFixed(2).replace('.', ',')} € im Vergleich zur<br>${result.comparedToOption}`
                             : 'Dies ist die günstigste Option<br>&nbsp;';
