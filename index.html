@@ -71,10 +71,11 @@
                         <option value="kristalltherme">Kristall-Therme Schwangau</option>
                         <option value="titania">Titania Neusäß</option>
                         <option value="bobingen">Saunapark Bobingen</option>
+                        <option value="mywellnes">MyWellnes Augsburg</option>
                         <option value="musterbad1">Musterbad 1</option>
-                        <option value="musterbad2">Musterbad 2</option>
-                        <option value="musterbad3">Musterbad 3</option>        <option   value="musterbad4">Musterbad 4</option>
-                        <option value="musterbad5">Musterbad 5</option>
+                        <option value="musterbad2">Musterbad 2</option> 
+                        <option value="musterbad4">Musterbad 3</option>
+                        <option value="musterbad3">Musterbad 4</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -263,19 +264,35 @@
                         'Samstag': { start: '09:30', end: '20:00' }
                     }
                 },
+                mywellnes: {
+                    permanentlyClosed: false,
+                    ticketPrices: [
+                        { duration: 60, price: 28.00, name: '1-Stunden-Karte' },
+                    ],
+                    extensionCost: 2.50,
+                    openingHoursData: {
+                        'Sonntag': { start: '09:00', end: '15:00' },
+                        'Montag': { start: '09:00', end: '20:00' },
+                        'Dienstag': { start: '09:00', end: '20:00' },
+                        'Mittwoch': { start: '09:00', end: '20:00'},
+                        'Donnerstag': { start: '09:00', end: '20:00' },
+                        'Freitag': { start: '09:00', end: '20:00' },
+                        'Samstag': { start: '09:00', end: '15:00' }
+                    }
+                },
                 musterbad1: {
                     permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
                         { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 27.00, name: 'Tageskarte (ab 5,0 Std.)' }
+                        { duration: Infinity, price: 26.00, name: 'Tageskarte (ab 5,0 Std.)' }
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
-                        'Sonntag': { start: '10:00', end: '21:00' },
-                        'Montag': { start: '09:00', end: '12:00' },
-                        'Dienstag': { start: '10:00', end: '23:00' },
-                        'Mittwoch': null,
+                        'Sonntag': { start: '10:00', end: '22:00' },
+                        'Montag': { start: '10:00', end: '22:00' },
+                        'Dienstag': null,
+                        'Mittwoch': { start: '10:00', end: '22:00' },
                         'Donnerstag': { start: '10:00', end: '22:00' },
                         'Freitag': { start: '10:00', end: '22:00' },
                         'Samstag': { start: '10:00', end: '22:00' }
@@ -295,29 +312,11 @@
                         'Dienstag': null,
                         'Mittwoch': { start: '10:00', end: '22:00' },
                         'Donnerstag': { start: '10:00', end: '22:00' },
-                        'Freitag': { start: '10:00', end: '22:00' },
-                        'Samstag': { start: '10:00', end: '22:00' }
-                    }
-                },
-                musterbad3: {
-                    permanentlyClosed: false,
-                    ticketPrices: [
-                        { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
-                        { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 26.00, name: 'Tageskarte (ab 5,0 Std.)' }
-                    ],
-                    extensionCost: 2.50,
-                    openingHoursData: {
-                        'Sonntag': { start: '10:00', end: '22:00' },
-                        'Montag': { start: '10:00', end: '22:00' },
-                        'Dienstag': null,
-                        'Mittwoch': { start: '10:00', end: '22:00' },
-                        'Donnerstag': { start: '10:00', end: '22:00' },
                         'Freitag': {  start: '10:00', end:  '22:00' },
                         'Samstag': {  start: '10:00', end: '22:00' }
                     }
                 },
-                musterbad4: {
+                musterbad3: {
                     permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
@@ -335,7 +334,7 @@
                         'Samstag': { start: '10:00', end: '22:00' }
                     }
                 },       
-                musterbad5: {
+                musterbad4: {
                     permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
