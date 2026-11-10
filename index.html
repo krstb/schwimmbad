@@ -381,8 +381,8 @@
             function formatDurationText(min) {
                 const h = Math.floor(min / 60);
                 const m = Math.round(min % 60);
-                if (m === 0) return `${h} Std.`;
-                return `${h} Std. ${m}min`;
+                if (m === 0) return `${String(h).padStart(2, '0')} Std.`;
+                return `${String(h).padStart(2, '0')} Std. ${String(m).padStart(2, '0')}min`;
             }
 
             function getClosingTime(date, hours) {
@@ -614,7 +614,7 @@
                 
                 if (lastInteractionType === 'duration' && (durationHoursValue || durationMinutesValue)) {
                     const hours = parseInt(durationHoursValue) || 0;
-                    const minutes = parseInt(durationMinutesInput.value) || 0;
+                    const minutes = parseInt(durationMinutesValue) || 0;
                     let plannedDuration = hours * 60 + minutes;
 
                     if (plannedDuration <= 0) {
@@ -680,8 +680,8 @@
                     effectiveDepartureTime = new Date(effectiveEntryTime.getTime() + durationInMinutes * 60 * 1000);
                     
                     if (maxDurationExceeded) {
-                        durationHoursInput.value = Math.floor(remainingMinutes / 60);
-                        durationMinutesInput.value = Math.round(remainingMinutes % 60);
+                        durationHoursInput.value = String(Math.floor(remainingMinutes / 60)).padStart(2, '0');
+                        durationMinutesInput.value = String(Math.round(remainingMinutes % 60)).padStart(2, '0');
                     }
 
                     if (effectiveDepartureTime.getTime() >= closingTime.getTime()) {
@@ -835,8 +835,8 @@
                     if (departureTimeValue) {
                         const dH = Math.floor(durationInMinutes / 60);
                         const dM = Math.round(durationInMinutes % 60);
-                        durationHoursInput.value = dH > 0 ? dH : '';
-                        durationMinutesInput.value = dM > 0 ? dM : '';
+                        durationHoursInput.value = String(dH).padStart(2, '0');
+                        durationMinutesInput.value = String(dM).padStart(2, '0');
                     }
 
                     const result = findBestOption(durationInMinutes);
@@ -902,7 +902,18 @@
                 calculateAndDisplay();
             }
 
-            function handleDurationBlur() {
+            function handleDurationBlur(event) {
+                const input = event.target;
+                const val = input.value.trim();
+                if (val !== '') {
+                    const num = parseInt(val, 10);
+                    if (!isNaN(num)) {
+                        input.value = String(num).padStart(2, '0');
+                    } else {
+                        input.value = '';
+                    }
+                }
+
                 if (lastInteractionType === 'duration') {
                     const hoursVal = durationHoursInput.value.trim();
                     const minsVal = durationMinutesInput.value.trim();
