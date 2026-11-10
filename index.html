@@ -74,8 +74,8 @@
                         <option value="mywellnes">MyWellnes Augsburg</option>
                         <option value="donautherme">Donautherme Ingolstadt</option>
                         <option value="erding">Therme Erding</option> 
+                        <option value="stadtbergen">Hallenbad Stadtbergen</option>
                         <option value="musterbad1">Musterbad 1</option>
-                        <option value="musterbad2">Musterbad 2</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -95,6 +95,7 @@
         <!-- Eingaben (Zeiten / Dauer) -->
         <div class="p-3 bg-slate-50/70 border border-slate-100 rounded-2xl space-y-2.5">
             <div class="grid grid-cols-2 gap-2">
+                <!-- Beginn mit separatem ⟳ Button -->
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label for="entryTime" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Beginn</label>
@@ -103,17 +104,22 @@
                             <span id="autoTimeText">Live</span>
                         </button>
                     </div>
-                    <div class="relative flex items-center">
-                        <input type="time" id="entryTime" class="w-full h-9 pl-2 pr-7 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm cursor-pointer">
-                        <button type="button" id="setNowIconBtn" class="absolute right-1 text-slate-400 hover:text-sky-600 p-1 text-xs font-bold transition-colors" title="Aktuelle Zeit setzen">⟳</button>
+                    <div class="flex items-center space-x-1">
+                        <input type="time" id="entryTime" class="w-full min-w-0 h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm cursor-pointer">
+                        <button type="button" id="setNowIconBtn" class="shrink-0 w-8 h-9 flex items-center justify-center bg-white border border-slate-200 hover:border-sky-300 rounded-lg text-slate-500 hover:text-sky-600 active:scale-95 text-xs font-bold shadow-sm transition-all" title="Aktuelle Zeit setzen">⟳</button>
                     </div>
                 </div>
-                <div class="relative">
+
+                <!-- Abreise mit separatem 19:00 Button -->
+                <div>
                     <div class="flex items-center justify-between mb-1">
                         <label for="departureTime" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Abreise bis</label>
                         <span id="tomorrowLabel" class="hidden text-[9px] font-extrabold uppercase px-1.5 py-0.5 bg-sky-600 text-white rounded-full">Morgen</span>
                     </div>
-                    <input type="time" id="departureTime" class="w-full h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
+                    <div class="flex items-center space-x-1">
+                        <input type="time" id="departureTime" class="w-full min-w-0 h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
+                        <button type="button" id="setDefaultDepartureBtn" class="shrink-0 h-9 px-1.5 bg-white border border-slate-200 hover:border-sky-300 rounded-lg text-slate-500 hover:text-sky-600 active:scale-95 text-[11px] font-bold shadow-sm transition-all whitespace-nowrap" title="Auf 19:00 Uhr setzen">19:00</button>
+                    </div>
                 </div>
             </div>
 
@@ -149,7 +155,7 @@
                     <p class="text-sm font-extrabold text-slate-800"><span id="calculatedCost">-</span></p>
                 </div>
                 <div id="breakEvenTimeContainer" class="p-2 bg-slate-50 border border-slate-200/80 rounded-xl h-[56px] flex flex-col justify-center overflow-hidden shadow-sm transition-all">
-                    <p id="breakEvenLabel" class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Tageskarte rentabel</p>
+                    <p id="breakEvenLabel" class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Große Karte ab</p>
                     <p id="breakEvenTimeDisplay" class="text-sm font-extrabold text-slate-800">-</p>
                 </div>
             </div>
@@ -180,6 +186,7 @@
             const entryTimeInput = document.getElementById('entryTime');
             const setNowIconBtn = document.getElementById('setNowIconBtn');
             const departureTimeInput = document.getElementById('departureTime');
+            const setDefaultDepartureBtn = document.getElementById('setDefaultDepartureBtn');
             const durationHoursInput = document.getElementById('durationHours');
             const durationMinutesInput = document.getElementById('durationMinutes');
             const recommendationBox = document.getElementById('recommendationBox');
@@ -328,25 +335,24 @@
                         'Samstag': {  start: '09:00', end: '24:00' }
                     }
                 },
-                musterbad1: {
+                stadtbergen: {
                     permanentlyClosed: false,
                     ticketPrices: [
-                        { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
-                        { duration: 240, price: 20.00, name: '4-Stunden-Karte' },
-                        { duration: Infinity, price: 26.00, name: 'Tageskarte (ab 5,0 Std.)' }
+                        { duration: 120, price: 5.50, name: 'bis 2-Stunden-Karte' },
+                        { duration: Infinity, price: 9.00, name: 'ab 2-Stunden-Karte' }
                     ],
-                    extensionCost: 2.50,
+                    extensionCost: 0,
                     openingHoursData: {
-                        'Sonntag': { start: '10:00', end: '22:00' },
-                        'Montag': { start: '14:00', end: '18:00' },
-                        'Dienstag': { start: '09:00', end: '20:00' },
-                        'Mittwoch': { start: '10:00', end: '22:00' },
-                        'Donnerstag': null,
-                        'Freitag': { start: '10:00', end: '21:00' },
-                        'Samstag': { start: '15:00', end: '18:00' }
+                        'Sonntag': { start: '09:00', end: '18:00' },
+                        'Montag': null,
+                        'Dienstag': { start: '08:00', end: '21:00' },
+                        'Mittwoch': { start: '08:00', end: '20:00' },
+                        'Donnerstag': { start: '08:00', end: '18:00' },
+                        'Freitag': { start: '12:15', end: '21:00' },
+                        'Samstag': { start: '09:00', end: '18:00' }
                     }
                 },       
-                musterbad2: {
+                musterbad1: {
                     permanentlyClosed: false,
                     ticketPrices: [
                         { duration: 120, price: 10.00, name: '2-Stunden-Karte' },
@@ -498,14 +504,23 @@
                 let bestOption = null;
                 let minCost = Infinity;
                 let allCalculatedCosts = [];
+                const hasExtension = currentTherme.extensionCost && currentTherme.extensionCost > 0;
+
                 currentTherme.ticketPrices.forEach(ticket => {
                     let cost = ticket.price;
                     if (durationInMinutes > ticket.duration && ticket.duration !== Infinity) {
-                        const extraMinutes = durationInMinutes - ticket.duration;
-                        const extensionsNeeded = Math.ceil(extraMinutes / 30); 
-                        cost += extensionsNeeded * currentTherme.extensionCost;
+                        if (!hasExtension) {
+                            cost = Infinity;
+                        } else {
+                            const extraMinutes = durationInMinutes - ticket.duration;
+                            const extensionsNeeded = Math.ceil(extraMinutes / 30); 
+                            cost += extensionsNeeded * currentTherme.extensionCost;
+                        }
                     }
-                    allCalculatedCosts.push({ name: ticket.name, cost: cost, duration: ticket.duration });
+
+                    if (cost !== Infinity) {
+                        allCalculatedCosts.push({ name: ticket.name, cost: cost, duration: ticket.duration });
+                    }
                     
                     if (cost < minCost || (cost === minCost && ticket.duration > (bestOption ? bestOption.duration : 0))) {
                         minCost = cost;
@@ -527,20 +542,27 @@
             }
 
             function getBreakEvenTime(entryTime) {
-                const fourHourTicket = currentTherme.ticketPrices.find(t => t.duration === 240);
+                const baseTicket = currentTherme.ticketPrices.find(t => t.duration === 240) || currentTherme.ticketPrices.find(t => t.duration !== Infinity);
                 const dayPassTicket = currentTherme.ticketPrices.find(t => t.duration === Infinity);
                 
-                if (!fourHourTicket || !dayPassTicket || fourHourTicket.price >= dayPassTicket.price) {
+                if (!baseTicket || !dayPassTicket || baseTicket.price >= dayPassTicket.price) {
                     breakEvenTimeContainer.classList.add('invisible');
                     return '';
                 }
                 
                 breakEvenTimeContainer.classList.remove('invisible');
-                breakEvenLabel.textContent = "Tageskarte rentabel";
+                breakEvenLabel.textContent = "Große Karte ab";
 
-                const costDifference = dayPassTicket.price - fourHourTicket.price;
-                const maxExtensionsCheaper = Math.floor((costDifference - 0.01) / currentTherme.extensionCost);
-                const minutesToBreakEven = fourHourTicket.duration + (maxExtensionsCheaper * 30) + 1;
+                let minutesToBreakEven;
+                const hasExtension = currentTherme.extensionCost && currentTherme.extensionCost > 0;
+
+                if (!hasExtension) {
+                    minutesToBreakEven = baseTicket.duration + 1;
+                } else {
+                    const costDifference = dayPassTicket.price - baseTicket.price;
+                    const maxExtensionsCheaper = Math.floor((costDifference - 0.01) / currentTherme.extensionCost);
+                    minutesToBreakEven = baseTicket.duration + (maxExtensionsCheaper * 30) + 1;
+                }
 
                 const dayOfWeek = days[entryTime.getDay()];
                 const hours = currentTherme.openingHoursData[dayOfWeek];
@@ -560,30 +582,16 @@
                 }
                 
                 const breakEvenDate = new Date(effectiveStartTime.getTime() + minutesToBreakEven * 60 * 1000);
-                
-                let plannedMinutes = 0;
-                if (lastInteractionType === 'duration') {
-                    const h = parseInt(durationHoursInput.value) || 0;
-                    const m = parseInt(durationMinutesInput.value) || 0;
-                    plannedMinutes = h * 60 + m;
-                } else if (departureTimeInput.value) {
-                    const [depH, depM] = departureTimeInput.value.split(':').map(Number);
-                    const depDate = new Date(entryTime.getFullYear(), entryTime.getMonth(), entryTime.getDate(), depH, depM);
-                    if (depDate.getTime() <= effectiveStartTime.getTime()) depDate.setDate(depDate.getDate() + 1);
-                    plannedMinutes = Math.round((depDate.getTime() - effectiveStartTime.getTime()) / (1000 * 60));
-                }
-
-                if (plannedMinutes >= minutesToBreakEven) {
-                    breakEvenLabel.textContent = "Tageskarte rentabel";
-                    return `${breakEvenDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
-                }
-                
                 return `${breakEvenDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
             }
 
             function getRecommendationColor(result) { 
-                if (result.bestOption.name.includes('2-Stunden')) return 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/20'; 
-                if (result.bestOption.name.includes('4-Stunden')) return 'bg-gradient-to-br from-amber-500 to-orange-500 shadow-amber-500/20'; 
+                if (result.bestOption.name.includes('2-Stunden') && !result.bestOption.name.includes('ab 2')) {
+                    return 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/20'; 
+                }
+                if (result.bestOption.name.includes('4-Stunden')) {
+                    return 'bg-gradient-to-br from-amber-500 to-orange-500 shadow-amber-500/20'; 
+                }
                 return 'bg-gradient-to-br from-sky-500 to-blue-600 shadow-sky-500/20';
             }
             
@@ -1057,7 +1065,13 @@
                 data.ticketPrices.forEach(ticket => {
                     contentHtml += `<tr class="border-b border-slate-100"><td class="py-1 text-slate-600 font-medium">${ticket.name}</td><td class="py-1 text-right font-bold text-slate-800">${ticket.price.toFixed(2).replace('.', ',')} €</td></tr>`;
                 });
-                contentHtml += `<tr class="border-b border-slate-100"><td class="py-1 text-slate-600 font-medium">Verlängerung 30 min.</td><td class="py-1 text-right font-bold text-slate-800">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
+
+                if (data.extensionCost && data.extensionCost > 0) {
+                    contentHtml += `<tr class="border-b border-slate-100"><td class="py-1 text-slate-600 font-medium">Verlängerung 30 min.</td><td class="py-1 text-right font-bold text-slate-800">${data.extensionCost.toFixed(2).replace('.', ',')} €</td></tr>`;
+                } else {
+                    contentHtml += `<tr class="border-b border-slate-100"><td class="py-1 text-slate-600 font-medium">Verlängerung</td><td class="py-1 text-right font-semibold text-slate-500 text-xs">Nicht möglich (Folgetarif)</td></tr>`;
+                }
+                
                 contentHtml += '</table>';
 
                 modalContent.innerHTML = contentHtml;
@@ -1102,7 +1116,6 @@
                 }
             });
 
-            // Setzt verlässlich die aktuelle Zeit, aktiviert Live-Modus und berechnet neu
             function setLiveTimeToNow() {
                 const now = getNow();
                 entryTimeInput.value = getNowTimeFormatted();
@@ -1113,11 +1126,19 @@
                 updateAutoButtonUI();
             }
 
-            // Nur der Button / das Icon setzt die Zeit auf "Jetzt"
-setNowIconBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    setLiveTimeToNow();
-});
+            setNowIconBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setLiveTimeToNow();
+            });
+
+            setDefaultDepartureBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                departureTimeInput.value = '19:00';
+                durationHoursInput.value = '';
+                durationMinutesInput.value = '';
+                lastInteractionType = 'time';
+                calculateAndDisplay();
+            });
 
             entryTimeInput.addEventListener('input', handleInput);
             departureTimeInput.addEventListener('input', handleInput);
