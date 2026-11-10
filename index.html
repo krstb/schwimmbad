@@ -74,8 +74,8 @@
                         <option value="mywellnes">MyWellnes Augsburg</option>
                         <option value="musterbad1">Musterbad 1</option>
                         <option value="musterbad2">Musterbad 2</option> 
-                        <option value="musterbad4">Musterbad 3</option>
-                        <option value="musterbad3">Musterbad 4</option>
+                        <option value="musterbad3">Musterbad 3</option>
+                        <option value="musterbad4">Musterbad 4</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -96,19 +96,28 @@
         <div class="p-3 bg-slate-50/70 border border-slate-100 rounded-2xl space-y-2.5">
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <label for="entryTime" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-1">Beginn</label>
-                    <input type="time" id="entryTime" class="w-full h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
+                    <div class="flex items-center justify-between mb-1">
+                        <label for="entryTime" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Beginn</label>
+                        <button type="button" id="autoTimeBtn" class="flex items-center space-x-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200" title="Klicken zum Umschalten zwischen Live/Öffnung und manueller Zeit">
+                            <span id="autoTimeDot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span id="autoTimeText">Live</span>
+                        </button>
+                    </div>
+                    <div class="relative flex items-center">
+                        <input type="time" id="entryTime" class="w-full h-9 pl-2 pr-7 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm cursor-pointer">
+                        <button type="button" id="setNowIconBtn" class="absolute right-1 text-slate-400 hover:text-sky-600 p-1 text-xs font-bold transition-colors" title="Aktuelle Zeit setzen">⟳</button>
+                    </div>
                 </div>
                 <div class="relative">
                     <div class="flex items-center justify-between mb-1">
                         <label for="departureTime" class="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">Abreise bis</label>
-                        <span id="tomorrowLabel" class="hidden text-[9px] font-extrabold uppercase px-1.5 py-0.2 bg-sky-600 text-white rounded-full">Morgen</span>
+                        <span id="tomorrowLabel" class="hidden text-[9px] font-extrabold uppercase px-1.5 py-0.5 bg-sky-600 text-white rounded-full">Morgen</span>
                     </div>
                     <input type="time" id="departureTime" class="w-full h-9 px-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm">
                 </div>
             </div>
 
-            <!-- Aufenthalt: Gleiche Breite wie Beginn, Labels STD und MIN genau über den Feldern -->
+            <!-- Aufenthalt -->
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <div class="flex items-end space-x-1.5">
@@ -128,15 +137,12 @@
 
         <!-- Ergebnisse -->
         <div id="results" class="space-y-2 pt-1">
-            
-            <!-- Empfehlungsbox -->
             <div id="recommendationBox" class="p-2 rounded-2xl text-white font-medium text-center shadow-lg transition-colors duration-500 h-[106px] flex flex-col justify-center overflow-hidden">
                 <div id="targetDateBadge" class="hidden inline-block mx-auto mb-0.5 px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded-md text-[10px] font-bold tracking-wide uppercase"></div>
                 <p id="recommendationText" class="text-base font-extrabold tracking-tight">Warte auf Eingabe</p>
                 <p id="savingsText" class="mt-0.5 text-xs text-white/90 leading-tight">&nbsp;</p>
             </div>
 
-            <!-- Kosten- und Rentabilitäts-Kacheln -->
             <div class="grid grid-cols-2 gap-2 text-center">
                 <div class="p-2 bg-slate-50 border border-slate-200/80 rounded-xl h-[56px] flex flex-col justify-center overflow-hidden shadow-sm">
                     <p class="text-[10px] tracking-wider text-slate-400 font-bold uppercase">Kosten</p>
@@ -172,6 +178,7 @@
             const appTitle = document.getElementById('appTitle');
             const thermeSelect = document.getElementById('thermeSelect');
             const entryTimeInput = document.getElementById('entryTime');
+            const setNowIconBtn = document.getElementById('setNowIconBtn');
             const departureTimeInput = document.getElementById('departureTime');
             const durationHoursInput = document.getElementById('durationHours');
             const durationMinutesInput = document.getElementById('durationMinutes');
@@ -190,6 +197,11 @@
             const closeModalButton = document.getElementById('closeModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
+            
+            const autoTimeBtn = document.getElementById('autoTimeBtn');
+            const autoTimeDot = document.getElementById('autoTimeDot');
+            const autoTimeText = document.getElementById('autoTimeText');
+
             const thermeData = {
                 badWoerishofen: {
                     permanentlyClosed: false,
@@ -308,8 +320,8 @@
                     openingHoursData: {
                         'Sonntag': { start: '10:00', end: '22:00' },
                         'Montag': { start: '10:00', end: '22:00' },
-                        'Dienstag': null,
-                        'Mittwoch': { start: '10:00', end: '22:00' },
+                        'Dienstag': { start: '10:00', end: '22:00' },
+                        'Mittwoch': null,
                         'Donnerstag': { start: '10:00', end: '22:00' },
                         'Freitag': {  start: '10:00', end:  '22:00' },
                         'Samstag': {  start: '10:00', end: '22:00' }
@@ -325,12 +337,12 @@
                     extensionCost: 2.50,
                     openingHoursData: {
                         'Sonntag': { start: '10:00', end: '22:00' },
-                        'Montag': { start: '10:00', end: '22:00' },
-                        'Dienstag': null,
+                        'Montag': { start: '14:00', end: '18:00' },
+                        'Dienstag': { start: '09:00', end: '20:00' },
                         'Mittwoch': { start: '10:00', end: '22:00' },
-                        'Donnerstag': { start: '10:00', end: '22:00' },
-                        'Freitag': { start: '10:00', end: '22:00' },
-                        'Samstag': { start: '10:00', end: '22:00' }
+                        'Donnerstag': null,
+                        'Freitag': { start: '10:00', end: '21:00' },
+                        'Samstag': { start: '15:00', end: '18:00' }
                     }
                 },       
                 musterbad4: {
@@ -342,13 +354,13 @@
                     ],
                     extensionCost: 2.50,
                     openingHoursData: {
-                        'Sonntag': { start: '10:00', end: '22:00' },
-                        'Montag': { start: '10:00', end: '22:00' },
+                        'Sonntag': { start: '08:00', end: '18:00' },
+                        'Montag': { start: '09:00', end: '22:00' },
                         'Dienstag': null,
-                        'Mittwoch': { start: '10:00', end: '22:00' },
+                        'Mittwoch': { start: '11:00', end: '15:00' },
                         'Donnerstag': null,
-                        'Freitag': { start: '10:00', end: '22:00' },
-                        'Samstag': { start: '10:00', end: '22:00' }
+                        'Freitag': { start: '08:00', end: '22:00' },
+                        'Samstag': null
                     }
                 }
             };
@@ -356,8 +368,28 @@
             let currentTherme = thermeData[thermeSelect.value];
             const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
             let lastInteractionType = 'time';
-            let isEntryTimeUserModified = false;
+            let isEntryTimeAuto = true;
+            let currentCalculationDate = new Date();
             let clearMessageTimer = null;
+
+            function updateAutoButtonUI() {
+                const now = getNow();
+                const isTargetToday = currentCalculationDate.toDateString() === now.toDateString();
+
+                if (!isEntryTimeAuto) {
+                    autoTimeBtn.className = "flex items-center space-x-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase transition-colors bg-slate-200 text-slate-600 hover:bg-slate-300";
+                    autoTimeDot.className = "w-1.5 h-1.5 rounded-full bg-slate-400";
+                    autoTimeText.textContent = "Manuell";
+                } else if (isTargetToday) {
+                    autoTimeBtn.className = "flex items-center space-x-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200";
+                    autoTimeDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
+                    autoTimeText.textContent = "Live";
+                } else {
+                    autoTimeBtn.className = "flex items-center space-x-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase transition-colors bg-sky-100 text-sky-700 hover:bg-sky-200";
+                    autoTimeDot.className = "w-1.5 h-1.5 rounded-full bg-sky-500";
+                    autoTimeText.textContent = "Öffnung";
+                }
+            }
 
             function getNow() {
                 const now = new Date();
@@ -440,20 +472,17 @@
                 nextOpeningHoursDisplay.classList.add("bg-sky-50", "text-sky-900", "border", "border-sky-100");
 
                 if (date.toDateString() === now.toDateString()) {
-                    const openingTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hours.start.split(':').map(Number));
                     const closingTime = getClosingTime(date, hours);
 
-                    if (now.getTime() < openingTime.getTime()) {
-                        nextOpeningHoursDisplay.innerHTML = `Öffnet heute um <strong>${hours.start} Uhr</strong>`;
-                    } else if (now.getTime() < closingTime.getTime()) {
-                        nextOpeningHoursDisplay.innerHTML = `Heute geöffnet bis <strong>${hours.end} Uhr</strong>`;
+                    if (now.getTime() < closingTime.getTime()) {
+                        nextOpeningHoursDisplay.innerHTML = `<div>Geöffnet</div><div>${hours.start} - ${hours.end} Uhr</div>`;
                     } else {
                         const tomorrow = new Date(now);
                         tomorrow.setDate(now.getDate() + 1);
                         const nextOpen = findNextOpenDate(tomorrow);
                         if (nextOpen) {
                             const dateStr = formatDateShort(nextOpen.date);
-                            nextOpeningHoursDisplay.innerHTML = `<div>Geschlossen, öffnet am <strong>${nextOpen.dayName}, ${dateStr}</strong></div><div>um <strong>${nextOpen.hours.start} Uhr</strong></div>`;
+                            nextOpeningHoursDisplay.innerHTML = `<div>Geöffnet <strong>${nextOpen.dayName}, ${dateStr}</strong></div><div>${nextOpen.hours.start} - ${nextOpen.hours.end} Uhr</div>`;
                         } else {
                             nextOpeningHoursDisplay.innerHTML = "Geschlossen";
                         }
@@ -573,9 +602,7 @@
                 if (targetDate.toDateString() !== now.toDateString() || isRuhetagSkipped) {
                     const dName = days[targetDate.getDay()];
                     const dStr = formatDateShort(targetDate);
-                    targetDateBadge.textContent = isRuhetagSkipped 
-                        ? `Berechnet für ${dName}, ${dStr}`
-                        : `Berechnet für ${dName}, ${dStr}`;
+                    targetDateBadge.textContent = `Berechnet für ${dName}, ${dStr}`;
                     targetDateBadge.classList.remove('hidden');
                 } else {
                     targetDateBadge.classList.add('hidden');
@@ -644,6 +671,7 @@
                     }
 
                     const dayForCalculation = nextOpen.date;
+                    currentCalculationDate = dayForCalculation;
                     const openingHours = nextOpen.hours;
                     const isRuhetagSkipped = (dayForCalculation.toDateString() !== baseDate.toDateString());
 
@@ -761,6 +789,7 @@
                     }
 
                     const dayForCalculation = nextOpen.date;
+                    currentCalculationDate = dayForCalculation;
                     const entryDayHours = nextOpen.hours;
                     const isRuhetagSkipped = (dayForCalculation.toDateString() !== targetDate.toDateString());
 
@@ -882,6 +911,8 @@
                 } else { 
                     tomorrowLabel.classList.add('hidden');
                 }
+
+                updateAutoButtonUI();
             }
             
             function handleInput(event) {
@@ -889,7 +920,8 @@
 
                 if (targetId === 'entryTime') {
                     lastInteractionType = 'time';
-                    isEntryTimeUserModified = true; 
+                    isEntryTimeAuto = false;
+                    updateAutoButtonUI();
                 } else if (targetId === 'departureTime') {
                     lastInteractionType = 'time';
                     durationHoursInput.value = '';
@@ -939,7 +971,7 @@
                     };
                 }
 
-                let effectiveStartTime = nextOpen.hours.start;
+                let defaultStartTime = nextOpen.hours.start;
                 const [openHour, openMinute] = nextOpen.hours.start.split(':').map(Number);
                 const openingTimeDate = new Date(nextOpen.date.getFullYear(), nextOpen.date.getMonth(), nextOpen.date.getDate(), openHour, openMinute, 0, 0);
                 const closingTimeDate = getClosingTime(nextOpen.date, nextOpen.hours);
@@ -951,15 +983,29 @@
                         const futureOpen = findNextOpenDate(tomorrow);
                         if (futureOpen) {
                             nextOpen = futureOpen;
-                            effectiveStartTime = futureOpen.hours.start;
+                            defaultStartTime = futureOpen.hours.start;
                         }
                     } else if (now.getTime() > openingTimeDate.getTime()) {
-                        effectiveStartTime = getNowTimeFormatted();
+                        defaultStartTime = getNowTimeFormatted();
                     }
                 }
                 
-                if (!isEntryTimeUserModified) {
-                    entryTimeInput.value = effectiveStartTime;
+                currentCalculationDate = nextOpen.date;
+
+                if (isEntryTimeAuto || !entryTimeInput.value) {
+                    entryTimeInput.value = defaultStartTime;
+                } else {
+                    const [curH, curM] = entryTimeInput.value.split(':').map(Number);
+                    const manualDate = new Date(nextOpen.date.getFullYear(), nextOpen.date.getMonth(), nextOpen.date.getDate(), curH, curM, 0, 0);
+                    const targetClosing = getClosingTime(nextOpen.date, nextOpen.hours);
+                    const [tOpenH, tOpenM] = nextOpen.hours.start.split(':').map(Number);
+                    const targetOpening = new Date(nextOpen.date.getFullYear(), nextOpen.date.getMonth(), nextOpen.date.getDate(), tOpenH, tOpenM, 0, 0);
+
+                    if (manualDate.getTime() < targetOpening.getTime()) {
+                        entryTimeInput.value = nextOpen.hours.start;
+                    } else if (manualDate.getTime() > targetClosing.getTime()) {
+                        entryTimeInput.value = nextOpen.hours.end;
+                    }
                 }
                 
                 if (lastInteractionType === 'time') {
@@ -981,7 +1027,7 @@
                 durationHoursInput.value = '';
                 durationMinutesInput.value = '';
                 lastInteractionType = 'time';
-                isEntryTimeUserModified = false;
+                isEntryTimeAuto = true;
                 initializeUI();
             }
 
@@ -1021,10 +1067,8 @@
 
             function startUpdateInterval() {
                 setInterval(() => {
-                    const isEntryFocused = (document.activeElement === entryTimeInput);
-
-                    if (!isEntryFocused && !isEntryTimeUserModified) {
-                        const now = getNow();
+                    const now = getNow();
+                    if (isEntryTimeAuto && currentCalculationDate.toDateString() === now.toDateString()) {
                         const todayHours = currentTherme.openingHoursData[days[now.getDay()]];
                         
                         if (todayHours && now.getTime() < getClosingTime(now, todayHours).getTime()) {
@@ -1043,7 +1087,37 @@
             startUpdateInterval();
 
             appTitle.addEventListener('click', resetApp);
-            thermeSelect.addEventListener('change', initializeUI);
+            
+            thermeSelect.addEventListener('change', () => {
+                initializeUI();
+            });
+
+            autoTimeBtn.addEventListener('click', () => {
+                isEntryTimeAuto = !isEntryTimeAuto;
+                if (isEntryTimeAuto) {
+                    initializeUI();
+                } else {
+                    updateAutoButtonUI();
+                }
+            });
+
+            // Setzt verlässlich die aktuelle Zeit, aktiviert Live-Modus und berechnet neu
+            function setLiveTimeToNow() {
+                const now = getNow();
+                entryTimeInput.value = getNowTimeFormatted();
+                currentCalculationDate = now;
+                isEntryTimeAuto = true;
+                lastInteractionType = 'time';
+                calculateAndDisplay();
+                updateAutoButtonUI();
+            }
+
+            // Nur der Button / das Icon setzt die Zeit auf "Jetzt"
+setNowIconBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setLiveTimeToNow();
+});
+
             entryTimeInput.addEventListener('input', handleInput);
             departureTimeInput.addEventListener('input', handleInput);
             durationHoursInput.addEventListener('input', handleInput);
