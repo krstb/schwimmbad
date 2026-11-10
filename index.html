@@ -860,7 +860,7 @@
                             departureTimeInput.value = entryDayHours.end;
                             effectiveDepartureTime = closingTime;
                             const maxMin = Math.max(0, (closingTime.getTime() - effectiveEntryTime.getTime()) / (1000 * 60));
-                            adjustedMessage += `Abreise auf Schließzeit angepasst (max. ${formatDurationText(maxMin)})<br>`;
+                            adjustedMessage += `Abreise auf Schließzeit angepasst<br>(max. ${formatDurationText(maxMin)})<br>`;
                         } else if (depDate.getTime() < openingTime.getTime()) {
                             departureTimeInput.value = entryDayHours.start;
                             effectiveDepartureTime = openingTime;
