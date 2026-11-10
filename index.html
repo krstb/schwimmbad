@@ -732,7 +732,7 @@
 
                     let messages = [];
                     if (startTimeShifted) messages.push('Beginn auf Öffnungszeit angepasst');
-                    if (maxDurationExceeded) messages.push(`Dauer angepasst (max. ${formatDurationText(remainingMinutes)})`);
+                    if (maxDurationExceeded) messages.push(`Dauer angepasst<br>(max. ${formatDurationText(remainingMinutes)})`);
 
                     clearTimeout(clearMessageTimer);
 
