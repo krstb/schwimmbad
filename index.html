@@ -380,15 +380,29 @@
             let currentCalculationDate = new Date();
             let clearMessageTimer = null;
 
-            function updateAutoButtonUI() {
+                        function updateAutoButtonUI() {
                 const now = getNow();
                 const isTargetToday = currentCalculationDate.toDateString() === now.toDateString();
+
+                // Prüfen, ob heute vor der Öffnungszeit
+                let isBeforeOpeningToday = false;
+                if (isTargetToday && !currentTherme.permanentlyClosed) {
+                    const dayName = days[now.getDay()];
+                    const todayHours = currentTherme.openingHoursData[dayName];
+                    if (todayHours) {
+                        const [openH, openM] = todayHours.start.split(':').map(Number);
+                        const openingTimeDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), openH, openM, 0, 0);
+                        if (now.getTime() < openingTimeDate.getTime()) {
+                            isBeforeOpeningToday = true;
+                        }
+                    }
+                }
 
                 if (!isEntryTimeAuto) {
                     autoTimeBtn.className = "flex items-center space-x-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase transition-colors bg-slate-200 text-slate-600 hover:bg-slate-300";
                     autoTimeDot.className = "w-1.5 h-1.5 rounded-full bg-slate-400";
                     autoTimeText.textContent = "Manuell";
-                } else if (isTargetToday) {
+                } else if (isTargetToday && !isBeforeOpeningToday) {
                     autoTimeBtn.className = "flex items-center space-x-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200";
                     autoTimeDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
                     autoTimeText.textContent = "Live";
@@ -398,6 +412,7 @@
                     autoTimeText.textContent = "Öffnung";
                 }
             }
+
 
             function getNow() {
                 const now = new Date();
